@@ -15,13 +15,13 @@ The story is the spec. Where it and your judgement disagree, the story wins unti
 
 Fetch the issue **and its comments** — the comments often carry decisions the body never got. The tracker is the **Tracker** setting when the settings home has one, or GitHub when `gh repo view` finds the repo. Where the work arrived with no issue, say so and build from what the conversation settled.
 
-Then claim it: assign yourself and, where the project keeps a board, move the item to the Building stage (`/ep`'s [`BOARD.md`](../ep/BOARD.md)). Write the status **before** cutting the branch, and re-read the item afterwards — the write is what claims the story against other workers, and an issue still reading as ready to start invites one of them to claim it too. A worker that does not see itself as the writer lost the race and stops here.
+Then claim it: assign yourself and, where the project keeps a board, move the item to the Building stage (`/ep`'s [`BOARD.md`](../router/BOARD.md)). Write the status **before** cutting the branch, and re-read the item afterwards — the write is what claims the story against other workers, and an issue still reading as ready to start invites one of them to claim it too. A worker that does not see itself as the writer lost the race and stops here.
 
 Done when you can state the outcome, the seams, and the test level the story named.
 
 ## 2. Cut the branch
 
-Name it per `/ep`'s [`GIT.md`](../ep/GIT.md) `## Naming an issue, a PR and a branch`. The type follows the issue's type label where the **Labels** setting defines a type axis, and the change otherwise. The scope follows the issue's title — from the **Scopes** vocabulary where the project has one.
+Name it per `/ep`'s [`GIT.md`](../router/GIT.md) `## Naming an issue, a PR and a branch`. The type follows the issue's type label where the **Labels** setting defines a type axis, and the change otherwise. The scope follows the issue's title — from the **Scopes** vocabulary where the project has one.
 
 Branch off the default branch unless the user asked to stack this on another.
 
@@ -33,7 +33,7 @@ Before editing, read what governs the code you are about to touch:
 
 - The project's agent files — `AGENTS.md` or `CLAUDE.md` — from the root to the nearest one to each path.
 - Every standard and skill they route those paths to.
-- The glossary and the ADRs for the area, per `/ep`'s [`DECISIONS.md`](../ep/DECISIONS.md), so the code speaks the domain's words.
+- The glossary and the ADRs for the area, per `/ep`'s [`DECISIONS.md`](../router/DECISIONS.md), so the code speaks the domain's words.
 
 Then read the neighbouring implementation. The pattern already in the codebase beats the pattern you would invent, and matching it is what keeps the next agent able to navigate.
 
@@ -81,7 +81,7 @@ Done when the diff has been reviewed and every finding is fixed or dispositioned
 
 ## 8. Commit
 
-Commit per [`GIT.md`](../ep/GIT.md) `## Commits`: Conventional Commit subjects, each commit standing alone, written for the reader who finds it on the default branch.
+Commit per [`GIT.md`](../router/GIT.md) `## Commits`: Conventional Commit subjects, each commit standing alone, written for the reader who finds it on the default branch.
 
 Done when your work is committed and `git status` shows nothing of yours left behind.
 

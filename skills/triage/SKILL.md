@@ -21,7 +21,7 @@ Read the **Tracker** setting now, per [Settings](#settings): every triage ends i
 
 Read the issue with its comments, labels, assignees, dependency edges and linked PRs — on GitHub, `gh issue view <n> --comments`, with the edges from [`SPLITTING.md`](../to-story/SPLITTING.md) `## GitHub mechanics`. Where the project keeps a board, read the issue's status on it too. Note who filed it and when: age is evidence in § 2.
 
-Then restate the outcome in one or two sentences, in the domain's own words from the project's glossary ([`DECISIONS.md`](../ep/DECISIONS.md)). A story you cannot restate is one you cannot judge.
+Then restate the outcome in one or two sentences, in the domain's own words from the project's glossary ([`DECISIONS.md`](../router/DECISIONS.md)). A story you cannot restate is one you cannot judge.
 
 Done when you hold the body, every comment, the labels, the board status where there is a board, and the dependency edges, and the user would recognise their ask in your restatement.
 
@@ -136,9 +136,9 @@ Done when the user can act on the report without opening the issue.
 
 Nothing above wrote. When the user takes the verdict:
 
-- **Labels and board status in one pass**, where the project keeps a board whose status follows the labels — per `/ep`'s [`BOARD.md`](../ep/BOARD.md). Set separately, the two drift.
+- **Labels and board status in one pass**, where the project keeps a board whose status follows the labels — per `/ep`'s [`BOARD.md`](../router/BOARD.md). Set separately, the two drift.
 - **Settle** edits the body: each recommendation lands in `## Implementation Decisions` or `## Testing Decisions` as a decision with its reason, and a surface the stories missed becomes a numbered story. The body is working material until the work is on the default branch ([`STORIES.md`](../to-story/STORIES.md) `## Frozen once live`); an open story whose work is already live is a **Close**, never an edit.
-- **Grill** continues in this window — `/grilling` on the seed questions, then [`/ep-to-story`](../to-story/SKILL.md) rewrites the body from the same context, per [`/ep` § 4](../ep/SKILL.md#4-walk-it).
+- **Grill** continues in this window — `/grilling` on the seed questions, then [`/ep-to-story`](../to-story/SKILL.md) rewrites the body from the same context, per [`/ep` § 4](../router/SKILL.md#4-walk-it).
 - **Close** carries the reason and the issue or PR that made it moot.
 - **The triage note goes on the issue as a comment** — the verdict, the premise findings and the label delta — so the next agent reading the comments finds the judgement where the story lives.
 

@@ -1,5 +1,5 @@
 ---
-name: ep
+name: router
 description: Ask what to do with a request, and get walked through it. The router over the ep-* skills.
 disable-model-invocation: true
 metadata:

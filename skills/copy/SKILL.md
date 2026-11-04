@@ -16,7 +16,7 @@ Read [`COPY.md`](./COPY.md) and follow it, with the project's own rules from the
 Read the **Copy standard** setting now. Then read before writing one line:
 
 - The copy around the target: the same page, the sibling fields, the flow's other steps. That copy sets the voice, and a local edit does not invent a new one.
-- The glossary for the terms the target touches (`/ep`'s [`DECISIONS.md`](../ep/DECISIONS.md)), and the protected terms the **Copy standard** lists. On a documentation page, the terms are the tokens and props it documents, read from their source.
+- The glossary for the terms the target touches (`/ep`'s [`DECISIONS.md`](../router/DECISIONS.md)), and the protected terms the **Copy standard** lists. On a documentation page, the terms are the tokens and props it documents, read from their source.
 - The strings already shipped, for the terms already in use — in the translation catalogs where the project has them, or in the source.
 
 Done when you can name the surface, the voice its neighbours set, and the protected terms the target touches.

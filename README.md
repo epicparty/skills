@@ -52,12 +52,12 @@ Each skill declares its own settings in its `## Settings` section, so the list g
 
 ## How the prefix is applied
 
-The skills in this repository are written with the prefix `ep`. The CLI rewrites, in every Markdown file:
+The skills in this repository are written with the prefix `ep`, and the router's folder is `skills/router`. The CLI rewrites, in every Markdown file:
 
 - `/ep` to `/<prefix>`, and `/ep-<skill>` or `ep-<skill>` to `<prefix>-<skill>`;
 - `ep-*` to `<prefix>-*`;
-- links into a sibling skill's folder, `../<skill>/`, to `../<prefix>-<skill>/`;
-- each `SKILL.md`'s `name` to its installed name.
+- links into a sibling skill's folder, `../<skill>/`, to `../<prefix>-<skill>/`, and `../router/` to `../<prefix>/`;
+- each `SKILL.md`'s `name` to its installed name: `router` becomes `<prefix>`.
 
 Then it checks the result: every name matches its folder, every link and heading anchor resolves, and every skill named in the text is installed. Each skill also carries `pack: epicparty/skills` under `metadata`, which is how `/<prefix>-setup` finds the pack's skills whatever the prefix.
 

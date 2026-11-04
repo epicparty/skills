@@ -66,7 +66,7 @@ Done when the finding list has no undispositioned entries.
 
 Route the work through the project's standards the same way the original change would be: the agent files and what they route each path to ([`/ep-implement` § 3](../implement/SKILL.md#3-route-the-standards)). A babysit fix is held to the bar of the code it lands in.
 
-A conflict with the base is fixed first, by a rebase onto `origin/<base>` (`/ep`'s [`GIT.md`](../ep/GIT.md) `## Catching up with the default branch`). The other fixes are then written against the base they will land on, and one suite run covers them all.
+A conflict with the base is fixed first, by a rebase onto `origin/<base>` (`/ep`'s [`GIT.md`](../router/GIT.md) `## Catching up with the default branch`). The other fixes are then written against the base they will land on, and one suite run covers them all.
 
 Validate before pushing, per the **Full suite** setting ([Settings](#settings)). Under **CI runs it**, the push is what runs it, and step 9 reads the result. Under any other option, run what it names for what the PR touches — the suite is yours to run, because nothing else will.
 
@@ -121,7 +121,7 @@ Then merge the way the **Merge strategy** setting says ([Settings](#settings)), 
 gh pr merge <pr-number> --rebase --delete-branch   # --squash or --merge per the setting
 ```
 
-`/ep`'s [`GIT.md`](../ep/GIT.md) `## Merging` says what each strategy leaves on the default branch. Where a merge queue is enabled, this enqueues the PR rather than merging it — that is success; report it as queued and let the queue's own gate run.
+`/ep`'s [`GIT.md`](../router/GIT.md) `## Merging` says what each strategy leaves on the default branch. Where a merge queue is enabled, this enqueues the PR rather than merging it — that is success; report it as queued and let the queue's own gate run.
 
 Merging is the one irreversible act in the sweep. With the gate clear, take it — a merged PR is the whole point. With any part of it unclear, report and leave the PR open.
 
@@ -133,7 +133,7 @@ A merged PR is not yet a shipped one. [`/ep-ship`](../ship/SKILL.md) runs these 
 
 ## Guardrails
 
-- **The PR's history is append-only, except for a rebase onto the base.** Review fixes land as new commits, because amend and force-push move ground the reviewer is standing on. A conflict with the base is the one rewrite: rebase onto `origin/<base>` by `/ep`'s [`GIT.md`](../ep/GIT.md) `## Catching up with the default branch`, and never merge the base into the branch.
+- **The PR's history is append-only, except for a rebase onto the base.** Review fixes land as new commits, because amend and force-push move ground the reviewer is standing on. A conflict with the base is the one rewrite: rebase onto `origin/<base>` by `/ep`'s [`GIT.md`](../router/GIT.md) `## Catching up with the default branch`, and never merge the base into the branch.
 - **Checks are evidence.** Make the code satisfy them, and leave workflow files, required-check settings, and `continue-on-error` flags as they are — editing the gate to pass it forfeits the only signal the PR has.
 - **Reviews get answered.** Dismissing a review or approving the PR yourself is the human's call, in every case.
 - **The story's goal is the PR's scope, and a small fix rides along.** A finding the goal needs is a fix, and so is a **small fix**. A larger finding that serves another goal is deferred under **Found in passing**, and the user decides whether it becomes a story.

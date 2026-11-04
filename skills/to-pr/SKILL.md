@@ -9,7 +9,7 @@ metadata:
 
 One branch in, one open PR out. The counterpart to [`/ep-to-story`](../to-story/SKILL.md): that one writes the issue a human reads before the work, this one writes the PR a human reads during it.
 
-**Who reads the PR body depends on the merge.** Under a rebase or merge-commit merge, every commit lands on the default branch as itself, and the body is for reviewers and nothing else: anything a reader of `git log` will need has to be in a commit message already. Under a squash, the body becomes the commit body, and is written for that reader too (`/ep`'s [`GIT.md`](../ep/GIT.md) `## Merging`).
+**Who reads the PR body depends on the merge.** Under a rebase or merge-commit merge, every commit lands on the default branch as itself, and the body is for reviewers and nothing else: anything a reader of `git log` will need has to be in a commit message already. Under a squash, the body becomes the commit body, and is written for that reader too (`/ep`'s [`GIT.md`](../router/GIT.md) `## Merging`).
 
 ## 1. Pin the branch
 
@@ -58,7 +58,7 @@ Read the **Scopes** setting when it is set, and the **Merge strategy** setting n
 - **The suite report** — the command you ran, the SHA, and the result. Say plainly when it could not run. Leave it out when CI runs the suite.
 - **The issue link** from step 2.
 
-Use the domain's own vocabulary ([`DECISIONS.md`](../ep/DECISIONS.md)), name other issues with the **Tracker** setting's prefix, and follow the naming rules the project's agent files set for prose. Under a **Squash** merge, write the body as the commit body it becomes: lead with what `git log` needs, and keep the reviewer's notes — what to look at, the open questions — under their own headings below it.
+Use the domain's own vocabulary ([`DECISIONS.md`](../router/DECISIONS.md)), name other issues with the **Tracker** setting's prefix, and follow the naming rules the project's agent files set for prose. Under a **Squash** merge, write the body as the commit body it becomes: lead with what `git log` needs, and keep the reviewer's notes — what to look at, the open questions — under their own headings below it.
 
 Done when a reviewer who has not seen the issue would know why the branch exists and where to start reading.
 
@@ -66,7 +66,7 @@ Done when a reviewer who has not seen the issue would know why the branch exists
 
 Push the branch, then open the PR against the base — **ready for review, not a draft**. A draft can never reach the gate, and a PR nobody was asked to review is a PR that sits.
 
-Then, where the project keeps a board, move the issue to the Review stage (`/ep`'s [`BOARD.md`](../ep/BOARD.md)). Do it now rather than after CI goes green: review covers "PR open, awaiting CI and review", so an amber build belongs there too.
+Then, where the project keeps a board, move the issue to the Review stage (`/ep`'s [`BOARD.md`](../router/BOARD.md)). Do it now rather than after CI goes green: review covers "PR open, awaiting CI and review", so an amber build belongs there too.
 
 Report the PR number and URL, then hand to [`/ep-ship`](../ship/SKILL.md), which sweeps it to merged and follows it into production.
 

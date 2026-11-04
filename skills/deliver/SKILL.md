@@ -156,7 +156,7 @@ Skip this when the coordinator already claimed the story for this worker.
 
 Claim it in one write, and read it back:
 
-- **A board column** — move the story from that column to the Building stage (`/ep`'s [`BOARD.md`](../ep/BOARD.md)), then re-read the item. If it does not read Building with you as the writer, you lost the race.
+- **A board column** — move the story from that column to the Building stage (`/ep`'s [`BOARD.md`](../router/BOARD.md)), then re-read the item. If it does not read Building with you as the writer, you lost the race.
 - **A label** — assign yourself, then re-read the issue. If someone else is assigned too, you lost the race: unassign yourself. If you are the only one, remove the label.
 - **Named on the run** — assign yourself, and move it to the Building stage where the project keeps a board.
 
@@ -186,7 +186,7 @@ Two things earn a question, and each has exactly one surface.
 
 Either way, one comment opening with the literal line `**A worker needs a decision**`, then the single question, the options, your recommendation, and what you will do if no answer comes. That first line is how the coordinator finds the question and tells a reply from silence.
 
-Then park the story: remove your claim, and move the card to the board's Parked stage where it has one ([`BOARD.md`](../ep/BOARD.md)). Without that stage, the card keeps the stage it had. Never return a parked story to the queue: its branch or PR holds the state, and the next worker resumes from there.
+Then park the story: remove your claim, and move the card to the board's Parked stage where it has one ([`BOARD.md`](../router/BOARD.md)). Without that stage, the card keeps the stage it had. Never return a parked story to the queue: its branch or PR holds the state, and the next worker resumes from there.
 
 ### What earns a go/no-go
 

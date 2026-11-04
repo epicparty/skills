@@ -11,9 +11,9 @@ const tmp = mkdtempSync(join(tmpdir(), 'epicparty-skills-test-'));
 after(() => rmSync(tmp, { recursive: true, force: true }));
 
 describe('rewriteText', () => {
-  const names = ['ep', 'implement', 'to-pr', 'to-story'];
+  const names = ['router', 'implement', 'to-pr', 'to-story'];
   it('rewrites slash commands, names, wildcards and sibling links', () => {
-    const text = 'Run `/ep`, then [`/ep-implement`](../implement/SKILL.md) and `/ep-to-pr`; read `/ep`\'s [`GIT.md`](../ep/GIT.md). Every `ep-*` skill.';
+    const text = 'Run `/ep`, then [`/ep-implement`](../implement/SKILL.md) and `/ep-to-pr`; read `/ep`\'s [`GIT.md`](../router/GIT.md). Every `ep-*` skill.';
     assert.equal(
       rewriteText(text, names, 'acme'),
       'Run `/acme`, then [`/acme-implement`](../acme-implement/SKILL.md) and `/acme-to-pr`; read `/acme`\'s [`GIT.md`](../acme/GIT.md). Every `acme-*` skill.',
@@ -43,7 +43,8 @@ describe('slug', () => {
 
 describe('the pack', () => {
   it('has the router and a marker on every skill', () => {
-    assert.ok(skills.includes('ep'));
+    assert.ok(skills.includes('router'));
+    assert.ok(!skills.includes('ep'));
     for (const s of skills) assert.match(readFileSync(join(SOURCE, s, 'SKILL.md'), 'utf8'), /\n {2}pack: epicparty\/skills\n/);
   });
   for (const prefix of ['ep', 'acme', 'my-co']) {
@@ -53,6 +54,11 @@ describe('the pack', () => {
       assert.equal(names.length, skills.length);
       assert.ok(names.includes(prefix));
       assert.deepEqual(check(out, prefix, { canonicalSkills: skills }), []);
+    });
+    it(`leaves no router folder link for prefix "${prefix}"`, () => {
+      const text = readFileSync(join(tmp, prefix, `${prefix}-deliver`, 'SKILL.md'), 'utf8');
+      assert.ok(!text.includes('../router/'));
+      assert.ok(text.includes(`../${prefix}/BOARD.md`));
     });
   }
 });

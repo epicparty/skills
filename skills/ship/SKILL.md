@@ -23,7 +23,7 @@ A sweep that cannot merge ends by naming the gate condition that stopped it. Rea
 - **Waiting on a human** — a review sitting on changes-requested, a thread you pushed back on, an **open question** the PR raised, a question about an external review that the user has not yet answered. Report and stop. Overruling a reviewer is theirs, not yours, and so is answering the question — ship it once they have, and it costs them one word instead of one PR.
 - **Blocked on work outside the PR** — report it with what is holding it.
 
-**Where the project keeps a board, set the Shipping stage once the gate is clear and immediately *before* the merge** (`/ep`'s [`BOARD.md`](../ep/BOARD.md)). It covers step 2 as well as the merge, so the story stops reading as in review the moment nobody is reviewing it any more.
+**Where the project keeps a board, set the Shipping stage once the gate is clear and immediately *before* the merge** (`/ep`'s [`BOARD.md`](../router/BOARD.md)). It covers step 2 as well as the merge, so the story stops reading as in review the moment nobody is reviewing it any more.
 
 The ordering is the whole point. The PR's closing link closes the issue **on** the merge, and a board that moves closed issues to done does it then. A shipping write landing after the merge would sit on top of that done and stay there, because the trigger is spent and never fires again. Writing first costs nothing and cannot collide.
 

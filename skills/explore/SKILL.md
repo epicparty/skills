@@ -9,7 +9,7 @@ metadata:
 
 The first move on a piece of work. Explore ends in a **brief**: what already exists, where the change lands, and what nobody has decided yet.
 
-It answers questions. The decisions stay with the user, and the code stays untouched — a brief is what [`/ep`](../ep/SKILL.md) reads to choose a route, and what `/grilling` needs before it can ask a question worth answering.
+It answers questions. The decisions stay with the user, and the code stays untouched — a brief is what [`/ep`](../router/SKILL.md) reads to choose a route, and what `/grilling` needs before it can ask a question worth answering.
 
 ## 1. Restate the request
 
