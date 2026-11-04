@@ -28,9 +28,9 @@ find -L .agents/skills .claude/skills ~/.agents/skills ~/.claude/skills \
   sort -u -k2,2
 ```
 
-Each line is a skill's name, `ep-<name>`, and its file. A skill reached twice — through `.claude/skills` and `.agents/skills`, say — resolves to one file and counts once.
+Each line is a skill's installed name and its file. A skill reached twice — through `.claude/skills` and `.agents/skills`, say — resolves to one file and counts once.
 
-Done when every installed `ep-*` skill is listed once.
+Done when every installed skill of the pack is listed once.
 
 ## 2. Collect the settings
 
@@ -50,7 +50,7 @@ The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whicheve
 - **One file** — at a path the user names.
 - **Another form** — as the user describes it.
 
-Write the answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create.
+Write the answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
 
 Done when the settings home is named and recorded.
 

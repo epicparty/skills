@@ -44,7 +44,8 @@ For every in-flight story, take the first row that matches:
 | What exists | Reading |
 | --- | --- |
 | **The issue is closed** | It is finished, whatever the board says. Move it to done. |
-| An open PR | Review, or shipping when it is merged and the deploy is unfinished |
+| A merged PR, the deploy unfinished | Shipping |
+| An open PR | Review |
 | A pushed branch, no PR | Building — it rejoins at `/ep-to-pr` |
 | No branch and no PR | Nothing was built. Return it to the queue, and remove your claim. |
 
@@ -222,7 +223,7 @@ This skill reads two settings `/ep` `## Settings` defines — **Tracker** and **
    - **One file** — at a path the user names.
    - **Another form** — as the user describes it.
 
-   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create.
+   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
 2. **The setting.** Read it at the settings home. Present: use it, and ask nothing.
 3. **Missing.** Ask its question below, recommended answer first, with the follow-up its option needs. Write the answer at the settings home, tell the user where it went and that they can edit it there or through `/ep-setup`, then continue.
 

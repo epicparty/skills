@@ -67,7 +67,7 @@ This skill reads one **setting**, **Copy standard**, at § 1. It writes the copy
    - **One file** — at a path the user names.
    - **Another form** — as the user describes it.
 
-   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create.
+   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
 2. **The setting.** Read it at the settings home. Present: use it, and ask nothing.
 3. **Missing.** Ask its question below, recommended answer first, with the follow-up its option needs. Write the answer at the settings home, tell the user where it went and that they can edit it there or through `/ep-setup`, then continue.
 
@@ -78,7 +78,7 @@ Topic `copy`. Question: *Who reads the product, which terms keep their exact for
 | Option | Follow-up | Recommend when |
 | --- | --- | --- |
 | **A document** | The file and heading that hold the project's copy rules | The agent files route copy to a standard already |
-| **These facts** | The reader in one sentence; the protected terms; the languages and the longest one; how a string reaches the product — the translation library, its extract command, the skill that fills missing translations; and any copy routed elsewhere | The project has no copy document |
+| **These facts** | The reader in one sentence; the protected terms; the languages and the longest one; how a string reaches the product — the translation library, its extract command, the skill that fills missing translations; and any copy routed elsewhere | The project has no copy document, and has protected terms, more than one language, or a translation library |
 | **None** | — | One language, no protected terms: `COPY.md` alone, strings written in the source |
 
 Propose the facts from the code: the i18n library in `package.json`, the catalog files and their locales, the extract script, and the brand names the existing copy keeps capitalised.
