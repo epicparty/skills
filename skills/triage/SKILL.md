@@ -17,7 +17,7 @@ Labels are named here by **role** — the triage, info, discovery, ready and won
 
 ## 1. Read the record
 
-Read the **Tracker** setting now, per [Settings](#settings): every triage ends in a change to the issue, so a missing one is asked for here.
+Read the **Tracker** setting now, per [Settings](#settings): every triage ends in a change to the issue, so a missing one is asked for here. With **None**, stop: triage judges an issue, and the project keeps none. Say so.
 
 Read the issue with its comments, labels, assignees, dependency edges and linked PRs — on GitHub, `gh issue view <n> --comments`, with the edges from [`SPLITTING.md`](../to-story/SPLITTING.md) `## GitHub mechanics`. Where the project keeps a board, read the issue's status on it too. Note who filed it and when: age is evidence in § 2.
 

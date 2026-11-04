@@ -23,7 +23,7 @@ Two properties hold it together:
 - **The tracker is the coordination.** Workers never talk to each other. Everything one needs to know about the others is on the tracker: a claim, a status, a branch, a PR, a comment.
 - **A claim is a race you can lose.** Two workers reading the queue at the same moment see the same story. Losing the race is normal and costs nothing.
 
-Read the **Tracker**, **Ready signal**, **Orchestration** and **Checkout** settings when the run starts, per [Settings](#settings). The coordinator claims stories and starts work, so it asks for each one that is missing.
+Read the **Tracker**, **Ready signal**, **Orchestration** and **Checkout** settings when the run starts, per [Settings](#settings). The coordinator claims stories and starts work, so it asks for each one that is missing. With **Tracker** at **None**, both roles stop and say so: the queue, the claim and the table all live on the tracker. Route a story given in the chat through `/ep-implement` instead.
 
 ## The coordinator
 
@@ -44,10 +44,11 @@ For every in-flight story, take the first row that matches:
 | What exists | Reading |
 | --- | --- |
 | **The issue is closed** | It is finished, whatever the board says. Move it to done. |
+| An unanswered `**A worker needs a decision**` comment, on the issue or its PR | Parked. Resume nothing; list it under Parked. Where the board has a Parked stage, the card reads Parked. |
 | A merged PR, the deploy unfinished | Shipping |
 | An open PR | Review |
 | A pushed branch, no PR | Building — it rejoins at `/ep-to-pr` |
-| No branch and no PR | Nothing was built. Return it to the queue, and remove your claim. |
+| No branch and no PR | Nothing was built. Remove your claim, and return it to the queue: restore the Ready signal the claim took off. That return is the one Ready signal write a skill makes. |
 
 The closed row moves a card to done by hand, where a board would usually do it on the close. That is safe here because the closed state **is** the confirmation, read before the write: a card closed before the board's automation existed, or written over afterwards, has no second chance to correct itself.
 
@@ -107,7 +108,7 @@ SHOP-177  shared/platform: port registry         Shipping  3m    #198  deploy ru
 
 Queued (3):  SHOP-205 · SHOP-206 (held — blocked by SHOP-205) · SHOP-211 (held — collides with SHOP-205, shared scope)
 Parked (1):  SHOP-199 — worker question, unanswered 40m
-Not ready (1): SHOP-188 — no ready label: acceptance criteria name no test level
+Not ready (1): SHOP-188 — fails the Ready bar: acceptance criteria name no test level
 ```
 
 Every column comes from the tracker and `git`, with issues named by the **Tracker** setting's prefix. The table is fixed-width and already carries the title, so it skips the bold title a first mention would otherwise get.
@@ -125,7 +126,7 @@ Done when every in-flight story has a row whose stage, age and blocker match the
 
 Steering is a **comment**. It survives a crashed session, it works from every tool, and it lands where the decision belongs.
 
-Each beat, read new comments on the in-flight issues and their PRs. A comment that changes what a worker should do gets relayed to the worker holding that story. A comment answering a parked question moves that story on: drop the label the question added, restore its place in the queue, and say so in the report.
+Each beat, read new comments on the in-flight issues and their PRs. A comment that changes what a worker should do gets relayed to the worker holding that story. A comment answering a parked question moves that story on: drop the label the question added, move a Parked card to the stage its branch or PR reads in § 1, and say so in the report. The next free worker resumes it from there.
 
 Where a worker is reachable through the harness — a thread this coordinator started — relay immediately and say you did. Where it is not, the comment stands on the issue and the worker picks it up at its next stage boundary. Say that too, because the difference is whether your instruction lands in seconds or in twenty minutes.
 
@@ -161,7 +162,7 @@ Claim it in one write, and read it back:
 
 This single write is the only thing stopping two workers building one story, so it happens before the branch, not after. A worker that lost the race stops, and says which story it lost.
 
-A story that never earned its ready label is not yours to build or to grill. Report it and stop; the coordinator's pre-flight is what asks about it.
+A story that fails the Ready bar in [`STORIES.md`](../to-story/STORIES.md) `## Ready` is not yours to build or to grill, whatever its labels say. Started by the coordinator, trust its pre-flight: it checked the bar. Started by hand, check the bar yourself. Report a story that fails it and stop; the coordinator's pre-flight is what asks about it.
 
 Done when you hold the claim, or have stopped and said why.
 
@@ -179,11 +180,13 @@ Autonomy is the default and the bar to break it is high. Before asking anything,
 
 Two things earn a question, and each has exactly one surface.
 
-**A question about the spec** → the **issue**. The story is ambiguous, contradicts itself, or never decided something the build turns on. That is a defect in the spec, so the answer belongs where the spec lives. Add the discovery label for an unmade decision or the info label for a missing fact, and take the story out of the queue. Opening a PR to carry a spec question contradicts [`/ep-to-pr`](../to-pr/SKILL.md) `## 5`: a PR is where work is reviewed, never where it is proposed.
+**A question about the spec** → the **issue**. The story is ambiguous, contradicts itself, or never decided something the build turns on. That is a defect in the spec, so the answer belongs where the spec lives. Add the discovery label for an unmade decision or the info label for a missing fact. Opening a PR to carry a spec question contradicts [`/ep-to-pr`](../to-pr/SKILL.md) `## 5`: a PR is where work is reviewed, never where it is proposed.
 
 **A go/no-go on the work** → the **PR**. Take the branch to a normal reviewable PR through `/ep-to-pr`, then ask in a comment on it. Nobody can answer *is this safe to run* without the diff in front of them.
 
 Either way, one comment opening with the literal line `**A worker needs a decision**`, then the single question, the options, your recommendation, and what you will do if no answer comes. That first line is how the coordinator finds the question and tells a reply from silence.
+
+Then park the story: remove your claim, and move the card to the board's Parked stage where it has one ([`BOARD.md`](../ep/BOARD.md)). Without that stage, the card keeps the stage it had. Never return a parked story to the queue: its branch or PR holds the state, and the next worker resumes from there.
 
 ### What earns a go/no-go
 
@@ -207,7 +210,7 @@ A parked story is resumed by whichever worker next finds it: an issue with a pus
 ## Guardrails
 
 - **A worker decides how, never what.** Every implementation call is yours to make and record. What the product should do was decided in the story.
-- **You never set the Ready signal.** That gate is the user's, and a skill that queues its own work has removed the only control the gate exists to give.
+- **You never set the Ready signal on a story the user did not mark.** That gate is the user's, and a skill that queues its own work has removed the only control the gate exists to give. The one write is the return in § 1: a story the user marked, whose claim produced nothing.
 - **The tracker is the state.** Anything that exists only in this context is gone when this session ends — a decision, a park, a failure reason all get written to the issue or the PR.
 - **A dirty checkout is evidence, not a chore.** It is the one thing here you never fix.
 - **Cut from `origin/<default>` every time.** Parallel workers all aim at one moving default branch. A branch that falls into conflict with it is rebased by the `/ep-babysit` sweeps that `/ep-ship` runs.
@@ -237,7 +240,7 @@ Topic `delivery`. Question: *How do you mark a story you want started now?*
 | **A label** | The label's name, such as `agent-queue` | The project has no board |
 | **None** | — | Stories are named on the run, every time |
 
-The signal says **you want this started now**, which is intent. A ready label says the story is specified well enough to build, which is a property of the story. Keep them apart, so a story can be honestly ready and still not wanted yet: a ready label is never the signal. Only a human sets the signal, and naming stories on the run skips it.
+The signal says **you want this started now**, which is intent. A ready label says the story is specified well enough to build, which is a property of the story. Keep them apart, so a story can be honestly ready and still not wanted yet: a ready label is never the signal. Only a human sets the signal — a skill only returns it (§ 1) — and naming stories on the run skips it.
 
 ### Orchestration
 

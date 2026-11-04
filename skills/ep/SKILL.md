@@ -128,10 +128,13 @@ Topic `issue-tracker`. Question: *Where does the project track its work, how doe
 | --- | --- | --- |
 | **GitHub Issues** | An issue prefix, optional — such as `EP-`, so issue 42 reads `EP-42` and `#42` is always a PR. Recommend one when the agent files or recent commit messages use it (`git log --oneline -200`); otherwise none, and issues read `#<n>`. Then the board, optional — a GitHub Project linked to the repo, with its status name for each [stage](./BOARD.md#stages) and the automations it runs (add on create, done on close, review on a linked PR). Recommend it when the repo links one open project | `gh repo view` finds the repo |
 | **Another tracker** | How to create, read with comments, search, comment on, label and close an issue there, and how a PR names the issue it closes. The issue key it numbers by, such as `ENG-` in Linear or `PROJ-` in Jira, where it has one. Its board, where the work moves through one: its status name for each [stage](./BOARD.md#stages), and how to read and set one | The work lives anywhere else |
+| **None** | — | `gh repo view` fails and the user names no other tracker |
 
 With **Another tracker**, every step that names a `gh issue` command does the same thing the way this setting describes.
 
 With a board, [`BOARD.md`](./BOARD.md) is how the skills keep it. Without one, they skip every board step.
+
+With **None**, the project tracks no issues, and nobody asks again. A skill that looks an issue up searches nothing and says no tracker was searched, even where `gh repo view` finds a repo. The skills skip every label and board step. A skill whose job is an issue says in its own steps what it does instead.
 
 **Naming an issue in prose.** Every `ep-*` skill names an issue with the prefix in chat replies, reports, issue and PR bodies, and commit bodies. A form the tracker parses keeps the tracker's own syntax: on GitHub, `Closes #<n>`, `Part of #<n>` and `Refines #<n>` keep `#`, because GitHub closes the issue or writes the backlink from them, and an `EP-` string would be inert text. In a chat reply, a report or a PR body, an issue is a **link**, and its first mention carries its title in bold — `[EP-42](<url>) **"<title>"**` — read from the tracker, never from memory. Later mentions are the bare link. A fixed-width table that already has a title column is exempt.
 

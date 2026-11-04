@@ -54,6 +54,8 @@ Done when every accepted requirement appears in a user story, an implementation 
 
 Read the **Tracker**, **Labels** and **Scopes** settings now, per [Settings](#settings).
 
+With **Tracker** at **None**, create nothing: print the story in the chat — its title and its body — for the user to keep, and say no issue was created. Skip **Labels** and the board.
+
 - **Title**: the project's own title rule where its agent files or the **Scopes** document state one. Otherwise `<scope>: <description>`, the description a lowercase imperative phrase with no type in it — or the description alone, without scopes. Take the scope from the vocabulary, never from a guess: a scope missing from it is a review finding.
 - **Labels**: the triage label, and stop there. Triage sets the label axes, and a ready label asserts a bar this skill cannot check, so it is triage's to apply. A label the tracker lacks is named in the report and left off.
 - **Board**: where the project keeps one, leave its status alone. The tracker adds the item asynchronously, so anything set in the same breath races it. Getting the labels right is the whole job.
@@ -62,7 +64,7 @@ On GitHub, `gh issue create`, with a heredoc for the body. On another tracker, t
 
 Report the issue and its URL, then hand to `/ep-implement`.
 
-Done when the issue exists, carries its title and the triage label, and reads as something an agent could build with no further conversation.
+Done when the issue exists with its title and the triage label — or, with **Tracker** at **None**, the story is printed with its title — and reads as something an agent could build with no further conversation.
 
 ## Settings
 

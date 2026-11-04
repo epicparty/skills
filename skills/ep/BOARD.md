@@ -9,16 +9,17 @@ The skills name a board's statuses by **stage**. The **Tracker** setting maps ea
 | Stage | Meaning | Who writes it |
 | --- | --- | --- |
 | **Ideas** | A draft idea, not wanted yet; never a real issue | A skill, on a draft it creates |
-| **Triage** | Not evaluated, or waiting on the reporter | The board's automation on add, then projected from the labels |
+| **Triage** | Not evaluated, or waiting on the reporter or on a decision | The board's automation on add, then projected from the labels |
 | **Backlog** | Prioritised, not started | Projected from the labels |
 | **Ready** | Fully specified | Projected from the labels |
-| **Queued** | Wanted now: a worker may claim it. Only where the **Ready signal** is this board column (`/ep-deliver`) | **The user**, by hand |
+| **Queued** | Wanted now: a worker may claim it. Only where the **Ready signal** is this board column (`/ep-deliver`) | **The user**, by hand. A skill only returns a story there (see Rules) |
 | **Building** | Being built, validated and self-reviewed on a branch | `/ep-implement` § 1, or the `/ep-deliver` claim |
 | **Review** | PR open, awaiting CI and review | `/ep-to-pr` § 5, and the board's automation where it watches linked PRs |
 | **Shipping** | Merged; deploy running, awaiting its receipt | `/ep-ship` § 1 |
+| **Parked** | Optional. A worker stopped on a question; its branch or PR holds the work | `/ep-deliver`, at the park |
 | **Done** | Closed | The board's automation on close |
 
-A board without some of these stages skips them, and the skills write nothing for a stage it lacks.
+A board without some of these stages skips them, and the skills write nothing for a stage it lacks. Without **Parked**, a parked story keeps the stage it had, and its question label and comment are what mark it.
 
 ## Labels drive the status, until the work starts
 
@@ -30,6 +31,7 @@ Up to **Ready**, read this table top-down and take the **first** row that matche
 | --- | --- |
 | The triage label, or an axis still unset | Triage |
 | The info label | Triage — looked at, but waiting on the reporter |
+| The discovery label | Triage — looked at, but waiting on a decision |
 | A ready label | Ready |
 | Every axis set | Backlog |
 
@@ -43,7 +45,7 @@ The triage label outranks a priority deliberately. The two co-occur on real issu
 - **When creating an issue, leave the status alone.** The automation adds the item asynchronously, so anything set in the same breath as the create races it and silently does nothing. Get the labels right instead; the board catches up on its own.
 - **When filing an idea, create a draft on the board, never an issue.** A draft is the one item you add by hand, because no automation can. An add automation may still write Triage on it, asynchronously, so `board_idea` below sets Ideas and re-reads until it holds.
 - **When labels move an issue along**, set the new stage in the same pass. By then the item exists.
-- **Only the user moves an issue into Queued.** It is the one stage no skill writes. An agent that queues its own work has removed the control the gate exists to give.
+- **Only the user queues a story.** No skill puts an issue in Queued that the user did not put there. An agent that queues its own work has removed the control the gate exists to give. The one write a skill makes is a **return**: a story the user queued, whose claim produced no branch and no PR, goes back to Queued (`/ep-deliver` § 1). The user wanted it started, and a worker that died does not cancel that.
 - **A claim is one write, then a read.** Write Building **before** cutting the branch, then re-read the item. A worker that does not see itself as the writer lost the race. This is the only thing stopping two workers building one story.
 - **Review when the PR opens**, not after CI goes green: Review covers "PR open, awaiting CI and review", so an amber build belongs there too. The write may agree with an automation that already made it; it costs one call and covers a PR opened without a link.
 - **Shipping immediately *before* the merge**, not after. The merge closes the issue, and a close automation then writes Done; a later Shipping write would land on top of Done and stick, because that trigger is spent.
@@ -64,11 +66,11 @@ The triage label outranks a priority deliberately. The two co-occur on real issu
 Read every card and move each one whose stage no longer matches what exists. Take the first rule that applies:
 
 1. **The issue is closed**: Done.
-2. **Building, Review or Shipping**: the in-flight table in [`/ep-deliver`](../deliver/SKILL.md) `### 1. Reconcile what is in flight` — a branch, a PR, a merge.
+2. **Building, Review, Shipping or Parked**: the in-flight table in [`/ep-deliver`](../deliver/SKILL.md) `### 1. Reconcile what is in flight` — a branch, a PR, a merge.
 3. **Triage, Backlog or Ready**: the label table above.
 4. **Queued, or a draft in Ideas**: leave it. Both are the user's own moves.
 
-Never write Queued. Name every card you moved, from which stage to which, and why. A card moved in silence is a card the user can no longer trust.
+Never queue a story the user did not queue: the only Queued write is the return that step 2 makes. Name every card you moved, from which stage to which, and why. A card moved in silence is a card the user can no longer trust.
 
 ## GitHub Projects commands
 
