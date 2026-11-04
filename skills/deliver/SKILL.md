@@ -23,7 +23,7 @@ Two properties hold it together:
 - **The tracker is the coordination.** Workers never talk to each other. Everything one needs to know about the others is on the tracker: a claim, a status, a branch, a PR, a comment.
 - **A claim is a race you can lose.** Two workers reading the queue at the same moment see the same story. Losing the race is normal and costs nothing.
 
-Read the **Tracker**, **Ready signal**, **Orchestration** and **Checkout** settings when the run starts, per [Settings](#settings). The coordinator claims stories and starts work, so it asks for each one that is missing. With **Tracker** at **None**, both roles stop and say so: the queue, the claim and the table all live on the tracker. Route a story given in the chat through `/ep-implement` instead.
+Read the **Tracker**, **Ready signal**, **Orchestration** and **Checkout** settings when the run starts, in that order, per [Settings](#settings). The coordinator claims stories and starts work, so it asks for each one that is missing. With **Tracker** at **None**, both roles stop before asking the others, and say so: the queue, the claim and the table all live on the tracker. Route a story given in the chat through `/ep-implement` instead.
 
 ## The coordinator
 
@@ -48,7 +48,7 @@ For every in-flight story, take the first row that matches:
 | A merged PR, the deploy unfinished | Shipping |
 | An open PR | Review |
 | A pushed branch, no PR | Building — it rejoins at `/ep-to-pr` |
-| No branch and no PR | Nothing was built. Remove your claim, and return it to the queue: restore the Ready signal the claim took off. That return is the one Ready signal write a skill makes. |
+| No branch and no PR | Nothing was built. Remove your claim, and return it to the queue: restore the Ready signal the claim took off, where it took one. A story named on the run only loses your assignment. That return is the one Ready signal write a skill makes. |
 
 The closed row moves a card to done by hand, where a board would usually do it on the close. That is safe here because the closed state **is** the confirmation, read before the write: a card closed before the board's automation existed, or written over afterwards, has no second chance to correct itself.
 
@@ -180,7 +180,7 @@ Autonomy is the default and the bar to break it is high. Before asking anything,
 
 Two things earn a question, and each has exactly one surface.
 
-**A question about the spec** → the **issue**. The story is ambiguous, contradicts itself, or never decided something the build turns on. That is a defect in the spec, so the answer belongs where the spec lives. Add the discovery label for an unmade decision or the info label for a missing fact. Opening a PR to carry a spec question contradicts [`/ep-to-pr`](../to-pr/SKILL.md) `## 5`: a PR is where work is reviewed, never where it is proposed.
+**A question about the spec** → the **issue**. The story is ambiguous, contradicts itself, or never decided something the build turns on. That is a defect in the spec, so the answer belongs where the spec lives. Add the discovery label for an unmade decision or the info label for a missing fact. Never open a PR to carry a spec question: a PR is where work is reviewed, never where it is proposed.
 
 **A go/no-go on the work** → the **PR**. Take the branch to a normal reviewable PR through `/ep-to-pr`, then ask in a comment on it. Nobody can answer *is this safe to run* without the diff in front of them.
 

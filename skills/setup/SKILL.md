@@ -72,6 +72,7 @@ Take the settings in scope — every unset one, or the one the user named — gr
 
 - Its question, and its options with the recommended one first. Settle the recommendation the way the setting's table says — a recommendation that reads the repo, reads it now.
 - The follow-up the chosen option needs.
+- A setting an earlier answer rules out is not asked — **Tracker** at **None** rules out **Labels**. List it in the report as ruled out.
 - **Skip** is always an answer. A skipped setting stays unset, and its skill asks for it when it first needs it.
 
 Write each answer at the settings home as soon as it is given, in the form the home names, then run any step the setting attaches to its answer — **Labels** offers to create the labels the tracker lacks. An interrupted setup then keeps every answer already given.
