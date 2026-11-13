@@ -99,9 +99,10 @@ Releases run on [Changesets](https://github.com/changesets/changesets), the way 
 
 1. **Every pull request that changes the pack adds a changeset** — `npx changeset` — whose entry starts with the skills it changes. [`.changeset/README.md`](./.changeset/README.md) has the format and the bump levels. CI fails a pull request that changes a skill and names it in no changeset.
 2. **On each push to `main`**, the Release workflow opens or updates a `chore: release` pull request. It bumps the pack's version and each named skill's, and writes `CHANGELOG.md`.
-3. **Merging that pull request is the release.** The workflow publishes the new version to npm through [trusted publishing](https://docs.npmjs.com/trusted-publishers) — no npm token is stored anywhere — tags `v<version>`, and publishes a GitHub release from the changelog.
+3. **Merging that pull request stages the release.** The workflow stages the new version on npm through [trusted publishing](https://docs.npmjs.com/trusted-publishers) — no npm token is stored anywhere — tags `v<version>`, and publishes a GitHub release from the changelog.
+4. **A maintainer approves it with 2FA**, and only then can anyone install it: on npmjs.com under the package's staged versions, or `npm stage list @epicparty/skills`, then `npm stage approve <stage-id>`. The run's summary says so. If staging failed, run the Release workflow by hand once the cause is fixed.
 
-npm must trust the workflow: on npmjs.com, `@epicparty/skills` → **Settings** → **Trusted publishing** names GitHub Actions, `epicparty/skills`, `release.yml`.
+npm must trust the workflow to stage, and only to stage: on npmjs.com, `@epicparty/skills` → **Settings** → **Trusted publishing** names GitHub Actions, `epicparty/skills`, `release.yml`, no environment, with **Allow npm publish** unticked. A run that could publish directly would skip the 2FA approval.
 
 The GitHub repository must allow it: **Settings → Actions → General → Allow GitHub Actions to create and approve pull requests**.
 
