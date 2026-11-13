@@ -7,7 +7,7 @@ import { dirname, join, resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
-import { build, check, packSkills, skillVersion, validatePrefix } from '../lib/transform.mjs';
+import { build, check, checkSource, packSkills, skillVersion, validatePrefix } from '../lib/transform.mjs';
 
 const PKG_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PKG = JSON.parse(readFileSync(join(PKG_ROOT, 'package.json'), 'utf8'));
@@ -100,6 +100,8 @@ function sourceDir(from) {
 }
 
 function buildChecked(source, prefix, out) {
+  const sourceProblems = checkSource(source);
+  if (sourceProblems.length) fail(`the skills in ${source} are inconsistent:\n  ${sourceProblems.join('\n  ')}`);
   const names = build(source, prefix, out);
   const problems = check(out, prefix, { canonicalSkills: packSkills(source) });
   if (problems.length) fail(`the built skills are inconsistent:\n  ${problems.join('\n  ')}`);
@@ -167,7 +169,7 @@ else if (command === 'update') {
   const names = buildChecked(sourceDir(opts.from), validatePrefix(opts.prefix), resolve(opts.out));
   console.log(`Built ${names.length} skills in ${resolve(opts.out)}`);
 } else if (command === 'check') {
-  const prefix = validatePrefix(opts.prefix ?? readLock(cwd)?.prefix ?? fail('check needs --prefix'));
+  const prefix = validatePrefix(opts.prefix ?? readLock(cwd)?.prefix ?? fail(`no ${LOCK} here to read the prefix from: pass --prefix <p>`));
   const dir = resolve(rest[0] ?? '.agents/skills');
   const problems = check(dir, prefix, { canonicalSkills: packSkills(sourceDir(opts.from)) });
   if (problems.length) fail(`${problems.length} problem(s):\n  ${problems.join('\n  ')}`);

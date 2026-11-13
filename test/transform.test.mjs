@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, describe, it } from 'node:test';
-import { UPSTREAM_MARK, build, check, packSkills, rewriteText, skillVersion, slug, validatePrefix } from '../lib/transform.mjs';
+import { UPSTREAM_MARK, build, check, checkSource, packSkills, rewriteText, skillVersion, slug, validatePrefix } from '../lib/transform.mjs';
 
 const SOURCE = new URL('../skills', import.meta.url).pathname;
+const CLI = new URL('../bin/cli.mjs', import.meta.url).pathname;
 const skills = packSkills(SOURCE);
 const tmp = mkdtempSync(join(tmpdir(), 'epicparty-skills-test-'));
 after(() => rmSync(tmp, { recursive: true, force: true }));
@@ -50,7 +52,11 @@ describe('the pack', () => {
     assert.ok(!skills.includes('ep'));
     for (const s of skills) assert.match(readFileSync(join(SOURCE, s, 'SKILL.md'), 'utf8'), /\n {2}pack: epicparty\/skills\n/);
   });
-  for (const prefix of ['ep', 'acme', 'my-co']) {
+  it('names only its own skills', () => {
+    assert.deepEqual(checkSource(SOURCE), []);
+  });
+  // `up`, `re`, `co` and `self` start English words in the text: up-to-date, re-read, co-occur, self-contained.
+  for (const prefix of ['ep', 'acme', 'my-co', 'up', 're', 'co', 'self']) {
     it(`builds consistently for prefix "${prefix}"`, () => {
       const out = join(tmp, prefix);
       const names = build(SOURCE, prefix, out);
@@ -74,5 +80,79 @@ describe('the pack', () => {
         || ['implement', 'to-story', 'router'].includes(s);
       assert.equal(existsSync(join(tmp, 'acme', name, 'NOTICE')), adapted, s);
     }
+  });
+});
+
+// A pack of two skills, written to dir: the router and implement, whose text is given.
+function miniPack(dir, implementText) {
+  const skill = (name, body) => {
+    mkdirSync(join(dir, name), { recursive: true });
+    writeFileSync(
+      join(dir, name, 'SKILL.md'),
+      `---\nname: ${name}\ndescription: ${name}.\nmetadata:\n  pack: epicparty/skills\n  version: 0.1.0\n---\n\n${body}\n`,
+    );
+  };
+  skill('router', 'Start with `/ep-implement`. Every `ep-*` skill.');
+  skill('implement', implementText);
+  return dir;
+}
+
+describe('checkSource', () => {
+  it('reports a reference to a skill the pack does not have', () => {
+    const src = miniPack(join(tmp, 'src-typo'), 'Then run `/ep-implment`, and never `ep-router`.');
+    assert.deepEqual(checkSource(src), [
+      'implement/SKILL.md: names /ep-implment, which is not a skill in the pack',
+      'implement/SKILL.md: names ep-router, which is not a skill in the pack',
+    ]);
+  });
+});
+
+describe('check', () => {
+  it('reads a word that starts with the prefix as text, not as a skill', () => {
+    const src = miniPack(join(tmp, 'src-words'), 'Cut from an up-to-date base, then up-implement-ish things. Back to `/ep`.');
+    const out = join(tmp, 'words-up');
+    build(src, 'up', out);
+    assert.deepEqual(check(out, 'up', { canonicalSkills: packSkills(src) }), []);
+  });
+  it('still reports a skill that is named but not installed', () => {
+    const out = join(tmp, 'missing-up');
+    build(SOURCE, 'up', out);
+    rmSync(join(out, 'up-implement'), { recursive: true });
+    const problems = check(out, 'up', { canonicalSkills: skills });
+    assert.ok(problems.length > 0);
+    assert.ok(problems.every((p) => /names \/?up-implement, which is not installed|points to a missing/.test(p)), problems.join('\n'));
+    assert.ok(problems.some((p) => p.endsWith('names /up-implement, which is not installed')));
+  });
+  it('needs the pack\'s skills', () => {
+    assert.throws(() => check(join(tmp, 'up'), 'up'), /canonicalSkills/);
+  });
+});
+
+describe('the CLI', () => {
+  const run = (args, cwd) => spawnSync(process.execPath, [CLI, ...args], { cwd, encoding: 'utf8' });
+  for (const prefix of ['up', 're', 'co', 'self']) {
+    it(`builds and checks the pack for prefix "${prefix}"`, () => {
+      const r = run(['build', '--prefix', prefix, '--out', join(tmp, `cli-${prefix}`)]);
+      assert.equal(r.status, 0, r.stderr);
+      assert.match(r.stdout, new RegExp(`^Built ${skills.length} skills`));
+    });
+  }
+  it('fails a build whose source names a missing skill', () => {
+    const src = miniPack(join(tmp, 'src-cli-typo'), 'Then run `/ep-implment`.');
+    const r = run(['build', '--from', src, '--prefix', 'up', '--out', join(tmp, 'cli-typo')]);
+    assert.equal(r.status, 1);
+    assert.match(r.stderr, /names \/ep-implment, which is not a skill in the pack/);
+  });
+  it('says check has no epicparty-skills.json to read the prefix from', () => {
+    const cwd = mkdtempSync(join(tmp, 'empty-'));
+    const r = run(['check'], cwd);
+    assert.equal(r.status, 1);
+    assert.match(r.stderr, /no epicparty-skills\.json here.*pass --prefix/);
+  });
+  it('checks an installed project', () => {
+    const cwd = mkdtempSync(join(tmp, 'project-'));
+    cpSync(join(tmp, 'cli-up'), join(cwd, '.agents', 'skills'), { recursive: true });
+    const r = run(['check', '--prefix', 'up'], cwd);
+    assert.equal(r.status, 0, r.stderr);
   });
 });
