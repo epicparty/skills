@@ -1,13 +1,18 @@
 name: Release
 
 # On every push to main: with changesets pending, open or update the "chore: release" pull
-# request that bumps the versions and writes CHANGELOG.md. With none pending — that pull
-# request just merged — publish the new version to npm through trusted publishing (no
-# token), tag it, and publish a GitHub release from its changelog.
+# request that bumps the versions and writes CHANGELOG.md. When that pull request merges — the
+# push changes the version in package.json — stage the new version on npm through trusted
+# publishing (no token), tag it, and publish a GitHub release from its changelog. npm holds a
+# staged version until a maintainer approves it with 2FA; only then can anyone install it.
+#
+# Run this workflow by hand (Actions → Release → Run workflow) to stage the current version when
+# it is on npm neither as published nor as staged, such as after a failed run.
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -20,6 +25,8 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -29,9 +36,34 @@ jobs:
       - uses: changesets/action@v2
         with:
           version-script: npm run version
-          publish-script: npx changeset publish
           commit-message: "chore: release"
           pr-title: "chore: release"
-          create-github-releases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Find a version to release
+        id: release
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          before=$(git show HEAD^:package.json 2>/dev/null | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version" || true)
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "$name@$version is already on npm."
+          elif [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] || [ "$version" != "$before" ]; then
+            echo "version=$version" >> "$GITHUB_OUTPUT"
+          else
+            echo "No release: the version is still $version."
+          fi
+      - name: Stage it on npm
+        if: steps.release.outputs.version
+        run: npm stage publish
+      - name: Tag it and publish the GitHub release
+        if: steps.release.outputs.version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          awk -v h="## $VERSION" '$0 == h { on = 1; next } on && /^## / { exit } on' CHANGELOG.md | sed '/./,$!d' > "$RUNNER_TEMP/notes.md"
+          gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --notes-file "$RUNNER_TEMP/notes.md"
+          cat >> "$GITHUB_STEP_SUMMARY" <<SUMMARY
+          **@epicparty/skills@$VERSION is staged on npm.** Approve it with 2FA to make it public: on npmjs.com under the package's staged versions, or \`npm stage list @epicparty/skills\` and \`npm stage approve <stage-id>\`.
+          SUMMARY
