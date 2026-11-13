@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, describe, it } from 'node:test';
-import { build, check, packSkills, rewriteText, slug, validatePrefix } from '../lib/transform.mjs';
+import { UPSTREAM_MARK, build, check, packSkills, rewriteText, skillVersion, slug, validatePrefix } from '../lib/transform.mjs';
 
 const SOURCE = new URL('../skills', import.meta.url).pathname;
 const skills = packSkills(SOURCE);
@@ -42,6 +42,9 @@ describe('slug', () => {
 });
 
 describe('the pack', () => {
+  it('gives every skill its own semver version', () => {
+    for (const s of skills) assert.match(skillVersion(join(SOURCE, s)) ?? '', /^\d+\.\d+\.\d+(-[\w.]+)?$/, s);
+  });
   it('has the router and a marker on every skill', () => {
     assert.ok(skills.includes('router'));
     assert.ok(!skills.includes('ep'));
@@ -61,4 +64,15 @@ describe('the pack', () => {
       assert.ok(text.includes(`../${prefix}/BOARD.md`));
     });
   }
+  it('keeps each skill\'s version through the build', () => {
+    assert.equal(skillVersion(join(tmp, 'acme', 'acme-implement')), skillVersion(join(SOURCE, 'implement')));
+  });
+  it('ships the NOTICE with every skill that carries adapted text, and only with those', () => {
+    for (const s of skills) {
+      const name = s === 'router' ? 'acme' : `acme-${s}`;
+      const adapted = readFileSync(join(tmp, 'acme', name, 'SKILL.md'), 'utf8').includes(UPSTREAM_MARK)
+        || ['implement', 'to-story', 'router'].includes(s);
+      assert.equal(existsSync(join(tmp, 'acme', name, 'NOTICE')), adapted, s);
+    }
+  });
 });

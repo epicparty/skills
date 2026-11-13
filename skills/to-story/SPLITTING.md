@@ -8,6 +8,8 @@ Every issue carries fixed overhead — a branch, a PR, a suite run, a review, a 
 
 One story per goal, each carrying its goal whole: every layer, every edge, its tests and its translations. A finished story is demoable on its own, and would be worth shipping if its siblings never existed. Two stories that could only ever ship together are one story.
 
+A set needs no parent. Two sibling stories, one blocking the other, are wired by the blocking edge alone; an epic exists only when the user wants the outcome tracked as one. A prerequisite nobody asked for that would not be asked for on its own is part of the story that needs it, not a second goal.
+
 Where the goals depend on each other, give each story its **blocking edges** — the siblings that must close before it can start. Prefactoring that several goals share goes first: make the change easy, then make the easy change.
 
 ## Check it with the user
@@ -26,7 +28,8 @@ Iterate until the user approves. A split nobody agreed to is a split that gets r
 
 In dependency order — blockers first, so each story's edges can name a real issue number.
 
-- **Parent**: promote it to an epic and let its `## Stories` checklist be the children, or keep it a story with the children linked under it. Either way it stays open and otherwise untouched.
+- **Parent**, where the set has one: promote it to an epic and let its `## Stories` checklist be the children, or keep it a story with the children linked under it. Either way it stays open and otherwise untouched.
+- **Without a parent**, each story takes the full story body from [`STORIES.md`](./STORIES.md).
 - **Child body**: `## Parent` · `## What to build` · `## Acceptance criteria` · `## Testing Decisions` · `## Blocked by`. A child inherits its parent's problem and solution and does not repeat them — that is the one dependency `STORIES.md` permits, and it is safe only because the parent is still open.
 - **Title**: the rule in [`/ep-to-story`](./SKILL.md) § 5.
 - **Labels**: the triage label, plus the parent's axis labels where they are obviously the same.
@@ -46,4 +49,5 @@ These are reached rarely, so read them rather than recall them.
 
 - **Sub-issue**: attach a child to its parent through GitHub's sub-issues endpoint (`gh api`).
 - **Blocking edge**: `gh api --method POST repos/<owner>/<repo>/issues/<child>/dependencies/blocked_by -F issue_id=<blocker-db-id>`, where `<blocker-db-id>` is the blocker's numeric **database id** (`gh api repos/<owner>/<repo>/issues/<n> --jq .id`) — _not_ the `#number` or the `node_id`. GitHub reports `issue_dependencies_summary.blocked_by`, which counts open blockers only: that is the live gate. Where dependencies are unavailable, fall back to the `## Blocked by` list in the child body.
+- **Reading the edges**: `gh api repos/<owner>/<repo>/issues/<n>/dependencies/blocked_by` lists what blocks an issue, and `…/dependencies/blocking` what it blocks.
 - **Frontier**: the children with no open blocker. List the parent's open children and drop any with `issue_dependencies_summary.blocked_by > 0`.

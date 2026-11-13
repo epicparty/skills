@@ -1,9 +1,10 @@
 ---
 name: router
-description: Ask what to do with a request, and get walked through it. The router over the ep-* skills.
+description: Ask what to do with a request, and get walked through it. The router over the ep-* skills. `/ep handoff` hands the thread to a fresh agent.
 disable-model-invocation: true
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # EP
@@ -12,46 +13,51 @@ A request arrives — a feature, a bug, a half-formed idea, a question. `/ep` re
 
 The user asked for their thing done. Routing is your job.
 
+Called as `/ep handoff`, skip to [Hand off](#hand-off).
+
 **The route's destination is one merged PR, deployed, and a clean default branch to start the next task from** — unless the request was a question. Everything below is sized to that.
 
 ## 1. Read the shape
 
-Two facts decide the route, and both are cheap to establish:
+Three facts decide the route, and all are cheap to establish:
 
 - **Provenance** — does an issue already describe this work? The user may not know. When they named none, search the tracker with the request's own nouns, closed issues included. The tracker is the **Tracker** setting when the settings home has one — read it, never ask for it — or GitHub when `gh repo view` finds the repo; with neither, say no tracker was searched. On GitHub: `gh issue list --search "<keywords>" --state all`, then `gh issue view <n> --comments` on a hit. A hit describing the same work is the provenance; an adjacent one is context. An issue that already specs the work is a grilling you do not need to run.
-- **What is unsettled** — the decisions this work turns on that nobody has made. A request with none is buildable now; a request with several has earned a grilling first.
+- **Where it lands** — the product, package or area of the project the work belongs to, in the glossary's words. A request that names the wrong one, or none where several fit, gets that settled before anything else.
+- **What is unsettled** — the decisions this work turns on that nobody has made. A request with none is buildable now. A request with a few gets them asked, one at a time ([Working rules](#working-rules)); only one whose decisions turn on each other has earned a grilling.
 
-When the request touches code you have not read this session, run `/ep-explore` to establish both. It is the default first move, not an optional one.
+When the request touches code you have not read this session, run `/ep-explore` to establish them. It is the default first move, not an optional one, and its brief counts for the route: a route that starts at `/ep-explore` continues from that brief rather than running it again.
 
-Done when you can name the issue this work came from or say it has none, and list what is still unsettled.
+Done when you can name the issue this work came from or say it has none, name where it lands, and list what is still unsettled.
 
 ## 2. Pick the route
 
 | What arrived | The route |
 | --- | --- |
-| An idea you want stress-tested before anyone builds it | `/grilling` → `/ep-to-story` → `/ep-implement` → `/ep-to-pr` → `/ep-ship` |
-| A feature understood well enough to build | `/ep-explore` → `/ep-to-story` → `/ep-implement` → `/ep-to-pr` → `/ep-ship` |
+| An idea you want stress-tested before anyone builds it | `/ep-grill` → `/ep-to-story` → `/ep-triage` → `/ep-implement` → `/ep-to-pr` → `/ep-ship` |
+| A feature understood well enough to build | `/ep-explore` → `/ep-to-story` → `/ep-triage` → `/ep-implement` → `/ep-to-pr` → `/ep-ship` |
 | An issue already written and Ready | `/ep-implement` → `/ep-to-pr` → `/ep-ship` |
 | An issue you are not sure is still right — old, thin, or mislabelled | `/ep-triage`, then the route its verdict names |
 | Small and obvious — one seam, no decisions | `/ep-implement` → `/ep-to-pr` → `/ep-ship` |
-| Something is broken | `/diagnosing-bugs` — a loop that goes **red** on the bug before any theorising — then `/ep-to-pr` → `/ep-ship` |
-| A design question that running code settles faster than talk | `/prototype`, then rejoin at `/ep-to-story` |
+| Something is broken, failing or slow | `/ep-diagnose` — a loop that goes **red** on the bug before any theorising — then `/ep-to-pr` → `/ep-ship` |
+| A feature whose shape is the question — new modules, seams nobody has placed, a design to judge | `/ep-explore` → `/ep-architect` → `/ep-to-story` → `/ep-triage` → `/ep-implement` → `/ep-to-pr` → `/ep-ship` |
+| Code in a named area that is hard to change or test | `/ep-architect`'s area scan, then the chosen refactor rejoins at `/ep-to-story` |
 | A question about facts outside this repo | `/ep-research`. Ends in findings, and a published note when they are worth keeping, not a PR |
 | A question about this codebase | `/ep-explore`, then answer. Ends in an answer, not a PR — say so rather than inventing work |
 | What is outdated, or what a new release brings | `/ep-outdated`. Ends in a report, not a PR |
 | Dependencies to upgrade — named packages, or all of them | `/ep-upgrade` → `/ep-to-pr` → `/ep-ship`. No story |
 | A committed branch with no PR | `/ep-to-pr` → `/ep-ship` |
 | An open PR that needs carrying to merged | `/ep-ship` |
-| A step only a human can take — credentials, a third-party dashboard, a cutover | `/wizard` writes them a script, then the route that hit the step continues |
 | An idea to keep, not to build now — "save it as an idea" | A draft in the board's Ideas stage ([`BOARD.md`](./BOARD.md) `board_idea`). Ends in the draft, not a PR |
 | "Check the board", "update the statuses" | [Checking the board](./BOARD.md#checking-the-board). Ends in a report of every card moved, not a PR |
 | Several stories marked to start, or named together | `/ep-deliver` — the coordinator walks them in sequence or starts a worker per story, and prints where each one stands |
 
+Where two rows fit, the unsettled decisions choose: decisions that turn on each other, and the request is an idea to grill; a few or none, and it is a feature to build, with the questions asked on the way. `/ep-triage` after `/ep-to-story` is quick — a story written to the bar earns its ready label in one pass — and it keeps the labels with the one skill that owns them.
+
 Editing an existing issue needs no skill — the story rules in `/ep-to-story` govern it, and a story whose work is on the default branch is frozen.
 
-`/grilling`, `/prototype`, `/diagnosing-bugs`, `/tdd`, `/wizard` and `/handoff` come from [mattpocock/skills](https://github.com/mattpocock/skills). Where one is not installed, do its step inline and say so.
-
 Done when you can name the route and the property of the request that chose it.
+
+A request that asks only for the route reads the shape from what is cheap — the tracker and the glossary, not a full `/ep-explore` — names the route, and stops. It asks no settings. Its report is § 5's shape at its smallest: the route and the property that chose it under **Details**, a one-line **TL;DR**, and **Your turn** with the open decisions, if any.
 
 ## 3. Tell the user the route
 
@@ -59,22 +65,24 @@ Before any of it starts, lay out what is about to happen to **their** request, i
 
 ```
 Here's the plan for the invite-links feature:
-1. I'll grill you on the open decisions — one question at a time, so stay with me.
+1. I'll ask you the three open decisions, one at a time, each with my recommendation.
 2. Story from that conversation, published as one issue.
 3. Implement it on a branch, test-first, and review the diff.
 4. Open the PR, drive it to green, merge it, confirm the deploy landed, and put you back on a clean default branch.
 ```
 
-Flag the **HITL** stages hardest — grilling and prototype are worked *with* the user, one question at a time, and stall silently when they wander off. An agent that answers its own grilling questions has skipped the only part the user was needed for.
+Name the settings the route's skills will ask for that are still unset, and ask them now, the way `/ep-setup` would for those skills: the walk then asks nothing, and the user is not called back mid-route for a one-line answer.
 
-Done when every stage is named in order and the HITL ones are flagged as needing the user live.
+Flag the **HITL** stages hardest — the questions, and a grilling when the route has one, are worked *with* the user, and they stall silently when the user wanders off. An agent that answers its own questions has skipped the only part the user was needed for.
+
+Done when every stage is named in order, the HITL ones are flagged as needing the user live, and the route's unset settings are answered or skipped.
 
 ## 4. Walk it
 
 Follow the skills the route names, and keep the two rules that bind every route:
 
-- **Context hygiene.** Grilling and the story stay in one unbroken window, so both build on the same thinking. `/ep-implement` then starts fresh from the issue. `/handoff` when a thread fills before the story exists.
-- **Re-route when the work says so.** A route is a reading of the request, and the request gets clearer as you work it. An "obvious" change that opens three decisions has earned a grilling; fog that burns off in exploration drops straight to `/ep-to-story`. Say when you change route and why.
+- **Context hygiene.** The questions, any grilling, and the story stay in one unbroken window, so both build on the same thinking. `/ep-implement` then starts fresh from the issue. [Hand off](#hand-off) when a thread fills before the story exists.
+- **Re-route when the work says so.** A route is a reading of the request, and the request gets clearer as you work it. An "obvious" change that opens three decisions has earned its questions, and one whose decisions turn on each other has earned a grilling; fog that burns off in exploration drops straight to `/ep-to-story`. Say when you change route and why.
 
 Every skill on a route reaches a skill by its name. Reading one off disk works too — following a skill you have read is the same as invoking it.
 
@@ -84,7 +92,27 @@ Done when every stage the route named has run, and any re-route is on the record
 
 The shape is `/ep-ship` § 4 — **Details**, then **TL;DR**, then **Your turn** last, because the user reads the chat from the bottom — and a route that reached `/ep-ship` has already produced it. Add the route you walked and any re-route, then stop. The same report twice is one report and one restatement.
 
+Every `ep-*` skill run alone that defines no report of its own ends in this shape too.
+
 A route that ended anywhere else takes the same three sections at whatever size it earned: an answer, a research note's link, or a stage that stalled. Where it stalled, the details name the condition and who owns it, the TL;DR says so, and **Your turn** closes with what only they can unblock.
+
+## Hand off
+
+<!-- upstream: mattpocock/skills skills/productivity/handoff/SKILL.md -->
+
+When a thread fills before the work reaches a durable home, write a **handoff document** a fresh agent can continue from. Words after `handoff` say what the next session is for; shape the document to that.
+
+Read what the thread points at first — the issue, the branch — so you know what already lives somewhere durable. Where everything does, write nothing: say no handoff is needed, and name the next step.
+
+- **Save it outside the checkout** — the session's scratch directory where the harness names one, else the OS temporary directory (`$TMPDIR`, else `/tmp`; `%TEMP%` on Windows).
+- **Point, never copy.** An issue, a branch, a commit, an ADR or a brief already holds what it holds: reference it by URL or path.
+- **Carry what lives only in this thread** — the decisions reached, the open questions, what was tried and ruled out, and the stage the route stopped at.
+- **End with the next steps**: the remaining stages of the route, by skill name, so the next agent knows which to invoke. Where no route ran in this thread, take it from the table in § 2.
+- **Redact** every key, password and piece of personal data.
+
+Report in § 5's shape — the path, or why none was needed, and the next step — then stop.
+
+Done when a fresh agent with only the document and the links in it could continue without asking what happened — or, with no document, with only the links you named.
 
 ## Vocabulary
 
@@ -102,7 +130,9 @@ A finding earns a durable home in exactly four cases: the user asked for one, it
 Every `ep-*` skill works by these, in every checkout.
 
 - **Preserve work you did not write.** The tree may be dirty, and humans and other agents may write to it at the same time. A `git status` change after one of your commands does not prove you caused it. Before discarding any change you did not make — `git checkout --`, `git restore`, `git stash`, a reset — show that you caused it, show the diff, and ask. When in doubt, leave the tree alone.
+- **Ask the decisions one at a time; grill only a tree.** Decisions only the user can make go to them **one question at a time**, through the harness's question tool where it has one — such as Claude Code's `AskUserQuestion` — and in plain chat where it has none. The user may answer one, leave, and come back to the next one waiting. Each question stands on its own: the context it needs inside the question, since the dialog may be all the user sees, and your recommended answer as the first option. The work waits for the answers, and that is the whole exchange. [`/ep-grill`](../grill/SKILL.md) runs only when the user asks for it, or when the decisions turn on each other so tightly that no list can be written up front — each answer would change the next questions.
 - **Do not agree by default.** A flawed premise or a non-standard approach gets corrected when you see it, not after it is built.
+- **No remote.** Where `git remote` lists none, the work ends in commits on a local branch, and `origin/<default>` reads as the local default branch. A skill that pushes, opens a PR, merges or deploys stops there and says so, and the settings only those skills read — **Merge strategy**, **Full suite**, **External reviewers** and **Deploy** — are not asked.
 - **Git** — how work is committed, named, merged and caught up — is [`GIT.md`](./GIT.md).
 - **Board** — how a project board's stages are kept, where the project has one — is [`BOARD.md`](./BOARD.md).
 - **Decisions** — where a decision the work makes is written down, and how the glossary and the ADRs are read — are [`DECISIONS.md`](./DECISIONS.md).
@@ -111,12 +141,12 @@ Every `ep-*` skill works by these, in every checkout.
 
 The skills on a route share the **settings** defined here. A skill that writes to what a setting names asks for it per these steps when it is missing; a skill that only looks something up reads it when it is set and never asks. Each `###` heading below is one setting: its topic, its question, and its options. `/ep-setup` reads the same headings to ask every setting up front.
 
-1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With no such line, ask the user where to keep them, the default first:
-   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one heading per setting.
+1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With neither file present, first ask which to create, recommending `AGENTS.md`, which most agents read. With no such line, ask the user where to keep them, the default first:
+   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one `##` heading per setting, named as the setting. Other headings in the file are the project's own notes.
    - **One file** — at a path the user names.
    - **Another form** — as the user describes it.
 
-   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
+   Write their answer as one line in that block, creating the block when it is missing — for the default, `` `ep-*` settings: `docs/agents/<topic>.md`, one heading per setting. ``
 2. **The setting.** Read it at the settings home. Present: use it, and ask nothing.
 3. **Missing.** Ask its question below, recommended answer first, with the follow-up its option needs. Write the answer at the settings home, tell the user where it went and that they can edit it there or through `/ep-setup`, then continue.
 
@@ -134,7 +164,7 @@ With **Another tracker**, every step that names a `gh issue` command does the sa
 
 With a board, [`BOARD.md`](./BOARD.md) is how the skills keep it. Without one, they skip every board step.
 
-With **None**, the project tracks no issues, and nobody asks again. A skill that looks an issue up searches nothing and says no tracker was searched, even where `gh repo view` finds a repo. The skills skip every label and board step, and never ask **Labels**. A skill whose job is an issue says in its own steps what it does instead.
+With **None**, the project tracks no issues, and nobody asks again. A skill that looks an issue up searches nothing and says no tracker was searched, even where `gh repo view` finds a repo. The skills skip every label and board step. **Labels** is never asked, and neither are `/ep-deliver`'s settings, because it does not run. A skill whose job is an issue says in its own steps what it does instead: `/ep-to-story` prints the story, and a route through `/ep-triage` skips it and builds from the printed story.
 
 **Naming an issue in prose.** Every `ep-*` skill names an issue with the prefix in chat replies, reports, issue and PR bodies, and commit bodies. A form the tracker parses keeps the tracker's own syntax: on GitHub, `Closes #<n>`, `Part of #<n>` and `Refines #<n>` keep `#`, because GitHub closes the issue or writes the backlink from them, and an `EP-` string would be inert text. In a chat reply, a report or a PR body, an issue is a **link**, and its first mention carries its title in bold — `[EP-42](<url>) **"<title>"**` — read from the tracker, never from memory. Later mentions are the bare link. A fixed-width table that already has a title column is exempt.
 
@@ -198,6 +228,8 @@ Topic `validation`. Question: *Which suite proves a branch before it merges, and
 | **This table** | One row per kind of change — a package, a layer, root files — and the commands it runs, in order | The checks run locally, and no document holds them |
 | **One command** | The command, such as `pnpm test:all` | One script runs everything |
 
+This is the one run that proves the branch, on its head commit before the PR. **Scoped check** (`/ep-implement`) is the faster run while building, and **Full gate** (`/ep-upgrade`) covers every package at once.
+
 Under **CI runs it**, the suite's evidence is the required checks passing on the PR's head commit. Under any other option, the skill runs the suite on the head commit itself, and the PR body carries a **suite report** — the commands, the commit SHA and the result — because nothing else proves that commit was tested.
 
 ### Checkout
@@ -215,5 +247,5 @@ Under **This checkout**, setup is a fresh branch off the default branch, and cle
 
 - **One goal, one story, one PR.** A story is as large as the outcome the user asked for, and one PR delivers it whole. A second story exists for a second goal and nothing else (`/ep-to-story`'s `SPLITTING.md`); a tracker of fragments hides the stories that matter.
 - **The user owns the decisions.** Facts you look up in the codebase. Decisions you put to them and wait for.
-- **The pull to start coding is strongest on the requests that least deserve it.** A big vague ask feels fastest to attack directly, and it is exactly the one where an hour of grilling saves a week of building the wrong thing.
+- **The pull to start coding is strongest on the requests that least deserve it.** A big vague ask feels fastest to attack directly, and it is exactly the one where ten minutes of questions saves a week of building the wrong thing.
 - **A request outside these routes just gets done.** Not everything is a feature. When no route fits, do the thing and say that is what you did.

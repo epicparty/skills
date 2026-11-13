@@ -7,7 +7,7 @@ import { dirname, join, resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
-import { build, check, packSkills, validatePrefix } from '../lib/transform.mjs';
+import { build, check, packSkills, skillVersion, validatePrefix } from '../lib/transform.mjs';
 
 const PKG_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PKG = JSON.parse(readFileSync(join(PKG_ROOT, 'package.json'), 'utf8'));
@@ -38,6 +38,23 @@ function fail(message) {
 function readLock(cwd) {
   const path = join(cwd, LOCK);
   return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : null;
+}
+
+/** The installed skills a lock records, as { name: version }. Older locks list names only. */
+function lockedSkills(lock) {
+  const skills = lock?.skills ?? {};
+  return Array.isArray(skills) ? Object.fromEntries(skills.map((n) => [n, null])) : skills;
+}
+
+/** One line per skill that is new, gone or at another version. */
+function versionChanges(before, after) {
+  const lines = [];
+  for (const [name, version] of Object.entries(after)) {
+    if (!(name in before)) lines.push(`  + ${name} ${version}`);
+    else if (before[name] !== version) lines.push(`  ~ ${name} ${before[name] ?? '?'} -> ${version}`);
+  }
+  for (const name of Object.keys(before)) if (!(name in after)) lines.push(`  - ${name}`);
+  return lines;
 }
 
 function writeLock(cwd, lock) {
@@ -99,7 +116,9 @@ async function install(cwd, opts, lock) {
       console.log(`Built ${names.length} skills for prefix "${prefix}" in ${stage}: ${names.join(', ')}`);
       return;
     }
-    const stale = (lock?.skills ?? []).filter((n) => !names.includes(n));
+    const before = lockedSkills(lock);
+    const after = Object.fromEntries(names.map((n) => [n, skillVersion(join(stage, 'skills', n))]));
+    const stale = Object.keys(before).filter((n) => !names.includes(n));
     if (stale.length) skillsCli(['remove', ...stale, '-y'], cwd);
     skillsCli(['add', stage, '--skill', '*', ...agents.flatMap((a) => ['--agent', a]), '-y'], cwd);
     dropFromSkillsLock(cwd, names);
@@ -108,9 +127,11 @@ async function install(cwd, opts, lock) {
       version: PKG.version,
       source: opts.from ? resolve(opts.from) : PKG.name,
       agents,
-      skills: names,
+      skills: after,
     });
     console.log(`Installed ${names.length} skills as ${prefix}, ${prefix}-*. Recorded in ${LOCK}.`);
+    const changes = versionChanges(before, after);
+    if (lock && changes.length) console.log(`Changed:\n${changes.join('\n')}`);
   } finally {
     if (!opts['dry-run']) rmSync(stage, { recursive: true, force: true });
   }
@@ -139,7 +160,7 @@ else if (command === 'update') {
   await install(cwd, { ...opts, prefix: opts.prefix ?? lock.prefix }, lock);
 } else if (command === 'remove') {
   const lock = readLock(cwd) ?? fail(`no ${LOCK} here: nothing to remove`);
-  skillsCli(['remove', ...lock.skills, '-y'], cwd);
+  skillsCli(['remove', ...Object.keys(lockedSkills(lock)), '-y'], cwd);
   rmSync(join(cwd, LOCK));
 } else if (command === 'build') {
   if (!opts.prefix || !opts.out) fail('build needs --prefix and --out');

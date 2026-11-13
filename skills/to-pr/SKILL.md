@@ -3,6 +3,7 @@ name: to-pr
 description: Opens a pull request from a committed branch, carrying its suite report and issue link. Use when a branch is ready for review.
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # To PR

@@ -1,6 +1,6 @@
 {
   "name": "@epicparty/skills",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "A delivery workflow for coding agents — explore, story, implement, PR, ship — installed under your project's own prefix.",
   "license": "MIT",
   "type": "module",
@@ -10,13 +10,17 @@
   "files": [
     "bin",
     "lib",
-    "skills"
+    "skills",
+    "NOTICE"
   ],
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "changeset": "changeset",
+    "version": "node scripts/version-skills.mjs && changeset version",
+    "check:changesets": "node scripts/version-skills.mjs --check"
   },
   "repository": {
     "type": "git",
@@ -27,5 +31,9 @@
     "claude-code",
     "codex",
     "skills"
-  ]
+  ],
+  "devDependencies": {
+    "@changesets/changelog-github": "1.0.1",
+    "@changesets/cli": "3.0.3"
+  }
 }

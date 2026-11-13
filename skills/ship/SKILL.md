@@ -3,6 +3,7 @@ name: ship
 description: Takes a PR to merged, confirms the production deploy landed, and returns the checkout to a clean slate. Use when asked to ship or deploy.
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Ship
@@ -111,12 +112,12 @@ What earns a line in the last two sections is what **changes what the user does 
 
 This skill reads one setting `/ep` `## Settings` defines — **Checkout** at § 3, shared with `/ep-deliver` — and one of its own, **Deploy** at § 2. It acts on what they name, so it asks for each one that is missing. Each `###` heading below is one setting: its topic, its question, and its options. `/ep-setup` reads the same headings to ask every setting up front.
 
-1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With no such line, ask the user where to keep them, the default first:
-   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one heading per setting.
+1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With neither file present, first ask which to create, recommending `AGENTS.md`, which most agents read. With no such line, ask the user where to keep them, the default first:
+   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one `##` heading per setting, named as the setting. Other headings in the file are the project's own notes.
    - **One file** — at a path the user names.
    - **Another form** — as the user describes it.
 
-   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
+   Write their answer as one line in that block, creating the block when it is missing — for the default, `` `ep-*` settings: `docs/agents/<topic>.md`, one heading per setting. ``
 2. **The setting.** Read it at the settings home. Present: use it, and ask nothing.
 3. **Missing.** Ask its question below, recommended answer first, with the follow-up its option needs. Write the answer at the settings home, tell the user where it went and that they can edit it there or through `/ep-setup`, then continue.
 

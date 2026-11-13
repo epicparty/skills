@@ -15,7 +15,7 @@ The label names below — the triage, discovery, epic and ready labels — are r
 One issue is **one goal**: the outcome someone asked for, carried whole — backend, frontend, tests and translations, every layer and every edge that reaching it takes. Shippable on its own and worth shipping on its own. A story is as large as its goal and never smaller: a large story reads as one piece of work on the tracker, where its fragments read as noise around the work that matters.
 
 - **Written from the beneficiary's side.** A story names who gets something and what they get. The implementation is how, and it comes later in the body.
-- **In domain vocabulary.** Use the terms from the project's glossary — `CONTEXT.md`, or the `CONTEXT-MAP.md` that routes to one per context — capitalised as the domain capitalises them. An issue that invents its own words for existing concepts is a rename waiting to happen.
+- **In domain vocabulary.** Use the terms from the project's glossary — `/ep`'s [`DECISIONS.md`](../router/DECISIONS.md) says where it lives — capitalised as the domain capitalises them. An issue that invents its own words for existing concepts is a rename waiting to happen.
 - **Not a task list.** Tasks belong to the PR that delivers the story. An issue whose body is a checklist of files to touch has skipped the part that makes it a story.
 - **Independent, or explicitly blocked.** If it needs another issue first, say so in `## Blocked by` and wire the tracker's native dependency.
 
@@ -28,9 +28,9 @@ Which shape an issue takes depends on how settled it is, not on who is writing i
 | **Epic** | the epic label | An outcome made of several goals, whose stories aren't known yet | `## Outcome` · `## Problem` · `## Stories` (checklist, each a future issue) · `## Success signals` · `## Out of scope` · `## Open questions` |
 | **Story** | the default | The work is understood well enough to build | [The story body](#the-story-body) |
 | **Child story** | a parent link | One goal of an epic or story that is still open | `## Parent` · `## What to build` · `## Acceptance criteria` · `## Testing Decisions` · `## Blocked by` |
-| **Discovery** | the discovery label | The outcome is wanted but the decisions aren't made | `## Context` · `## Scope (to be grilled)` · `## Acceptance (draft)`, and the open decisions listed as questions |
+| **Discovery** | the discovery label | The outcome is wanted but the decisions aren't made | `## Context` · `## Scope (to be decided)` · `## Acceptance (draft)`, and the open decisions listed as questions |
 
-A discovery ticket is a story that admits it isn't ready. It becomes a story when grilling closes its decisions — that rewrite is expected, and legitimate right up until the work ships.
+A discovery ticket is a story that admits it isn't ready. It becomes a story when its decisions are answered — that rewrite is expected, and legitimate right up until the work ships.
 
 A **child story** is a full story in every way that matters: its own title, its own labels, its own PR, demoable on its own. What it does not do is repeat its parent. The problem and the solution are stated once, on the parent, and the child links to them. That is the one place an issue may depend on another issue for its meaning, and it is safe precisely because the parent is open: both are live, and a reader following the link finds a document that is still being maintained.
 

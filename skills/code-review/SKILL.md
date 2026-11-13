@@ -3,6 +3,7 @@ name: code-review
 description: Reviews code on two axes, Standards and — when given a spec — Spec. Use before opening a PR, or when asked to review a branch, a commit range, working changes or a few files.
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Code Review
@@ -46,7 +47,7 @@ The project documents its rules in its agent files and the documents they route 
 - **`AGENTS.md` or `CLAUDE.md`, root to leaf** — the root file, then the nearest one to each changed path. The nested ones override for their subtree.
 - **The routed standards** — every document those files route the touched paths to, followed to the specific file for the touched code.
 - **The commit rules** — subjects and scopes, wherever the project states them. Under a rebase merge every commit reaches the default branch as itself, so each one is reviewed.
-- **The domain glossary and its ADRs** — `CONTEXT.md`, or the `CONTEXT-MAP.md` that routes to one per context, and `docs/adr/`, where the project keeps them. The diff should speak the domain's words, and a rename of an established term is a finding.
+- **The domain glossary and its ADRs** — where `/ep`'s [`DECISIONS.md`](../router/DECISIONS.md) says the project keeps them. The diff should speak the domain's words, and a rename of an established term is a finding.
 
 **Skip what tooling already enforces.** The formatter, linter and typechecker the project's scripts run already gate their rules. A review finding about a rule the gate would have caught spends the reviewer's attention on something a command already answers.
 

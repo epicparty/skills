@@ -4,6 +4,7 @@ description: Upgrade a pnpm workspace's dependencies to the versions /ep-outdate
 disable-model-invocation: true
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Upgrade
@@ -82,7 +83,7 @@ Done when every target is installed or held with its reason.
 
 An upgrade reaches the whole workspace, so the **Full gate** runs — every command, in its order, one at a time.
 
-A red gets a cause before a fix — `/diagnosing-bugs` where it is installed. Caused by the upgrade: migrate, or hold the package, and run the gate again. Reproduces on the base commit: it is not the upgrade's, and the report names it. A suite earns no retry: a red that passes on a second run still has a cause.
+A red gets a cause before a fix — [`/ep-diagnose`](../diagnose/SKILL.md). Caused by the upgrade: migrate, or hold the package, and run the gate again. Reproduces on the base commit: it is not the upgrade's, and the report names it. A suite earns no retry: a red that passes on a second run still has a cause.
 
 Done when every command of the **Full gate** is green on one state of the tree, or each red also reproduces on the base commit.
 
@@ -101,12 +102,12 @@ Done when the user can decide what happens to the upgrade from the report alone.
 
 This skill reads two **settings**, **Typecheck** and **Full gate**, at § 2. Each `###` heading below is one setting: its topic, its question, and its options. `/ep-setup` reads the same headings to ask every setting up front.
 
-1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With no such line, ask the user where to keep them, the default first:
-   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one heading per setting.
+1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With neither file present, first ask which to create, recommending `AGENTS.md`, which most agents read. With no such line, ask the user where to keep them, the default first:
+   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one `##` heading per setting, named as the setting. Other headings in the file are the project's own notes.
    - **One file** — at a path the user names.
    - **Another form** — as the user describes it.
 
-   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
+   Write their answer as one line in that block, creating the block when it is missing — for the default, `` `ep-*` settings: `docs/agents/<topic>.md`, one heading per setting. ``
 2. **The setting.** Read it at the settings home. Present: use it, and ask nothing.
 3. **Missing.** Ask its question below, recommended answer first, with the follow-up its option needs. Write the answer at the settings home, tell the user where it went and that they can edit it there or through `/ep-setup`, then continue.
 
@@ -128,7 +129,9 @@ Topic `validation`. Question: *Which commands prove the whole workspace after a 
 
 | Option | Follow-up | Recommend when |
 | --- | --- | --- |
-| **These commands** | The list, in order, each with any condition on it — "when Storybook moved" | Always: propose the list from the root `package.json` scripts and the validation section of `AGENTS.md` — format first, then lint, typecheck, tests and build, where each exists |
+| **These commands** | The list, in order, each with any condition on it — "when Storybook moved" | Always: propose the list from the root `package.json` scripts and the agent files' validation section where they have one — format first, then lint, typecheck, tests and build, where each exists |
+
+Unlike **Full suite** (`/ep`), which proves one branch by what it touches, the full gate covers every package at once, because an upgrade reaches all of them.
 
 ## Guardrails
 

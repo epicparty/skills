@@ -1,8 +1,9 @@
 ---
 name: research
-description: Investigates a question against primary sources and reports the findings, publishing a large one where the project keeps its research. Use when a question needs facts from outside this repo, or the user asks for a topic researched.
+description: Investigates a question against primary sources and reports the findings, publishing a large one where the project keeps its research. Use when a question needs facts from outside this repo, or the user asks for a topic researched. A failure in this code goes to /ep-diagnose instead.
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Research
@@ -85,12 +86,12 @@ Done when the citing document names the decision and the link.
 
 This skill reads one **setting**, **Destination**, at § 4. Each `###` heading below is one setting: its topic, its question, and its options. `/ep-setup` reads the same headings to ask every setting up front.
 
-1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With no such line, ask the user where to keep them, the default first:
-   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one heading per setting.
+1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With neither file present, first ask which to create, recommending `AGENTS.md`, which most agents read. With no such line, ask the user where to keep them, the default first:
+   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one `##` heading per setting, named as the setting. Other headings in the file are the project's own notes.
    - **One file** — at a path the user names.
    - **Another form** — as the user describes it.
 
-   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
+   Write their answer as one line in that block, creating the block when it is missing — for the default, `` `ep-*` settings: `docs/agents/<topic>.md`, one heading per setting. ``
 2. **The setting.** Read it at the settings home. Present: use it, and ask nothing.
 3. **Missing.** Ask its question below, recommended answer first, with the follow-up its option needs. Write the answer at the settings home, tell the user where it went and that they can edit it there or through `/ep-setup`, then continue.
 

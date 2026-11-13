@@ -3,6 +3,7 @@ name: outdated
 description: Reports which dependencies of a pnpm workspace have newer releases past the release quarantine, and what every changelog in between means for this codebase. Use when asked what is outdated, what a new release brings, or what an upgrade would involve.
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Outdated

@@ -3,6 +3,7 @@ name: babysit
 description: Sweeps an open PR toward merged. Use when a PR needs watching, a red check fixed, or a merge once its gate is clear.
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Babysit
@@ -142,12 +143,12 @@ A merged PR is not yet a shipped one. [`/ep-ship`](../ship/SKILL.md) runs these 
 
 This skill reads two settings `/ep` `## Settings` defines — **Full suite** at § 6 and **Merge strategy** at § 9 — and one of its own, **External reviewers** at § 8. It runs, merges and requests what they name, so it asks for each one that is missing. Each `###` heading below is one setting: its topic, its question, and its options. `/ep-setup` reads the same headings to ask every setting up front.
 
-1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With no such line, ask the user where to keep them, the default first:
-   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one heading per setting.
+1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With neither file present, first ask which to create, recommending `AGENTS.md`, which most agents read. With no such line, ask the user where to keep them, the default first:
+   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one `##` heading per setting, named as the setting. Other headings in the file are the project's own notes.
    - **One file** — at a path the user names.
    - **Another form** — as the user describes it.
 
-   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
+   Write their answer as one line in that block, creating the block when it is missing — for the default, `` `ep-*` settings: `docs/agents/<topic>.md`, one heading per setting. ``
 2. **The setting.** Read it at the settings home. Present: use it, and ask nothing.
 3. **Missing.** Ask its question below, recommended answer first, with the follow-up its option needs. Write the answer at the settings home, tell the user where it went and that they can edit it there or through `/ep-setup`, then continue.
 

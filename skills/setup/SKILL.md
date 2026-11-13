@@ -4,6 +4,7 @@ description: Walks every setting the installed ep-* skills declare and saves the
 disable-model-invocation: true
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Setup
@@ -22,19 +23,19 @@ List the skills of this pack installed for this project and for the user, follow
 find -L .agents/skills .claude/skills ~/.agents/skills ~/.claude/skills \
   -maxdepth 2 -name SKILL.md 2>/dev/null |
   while read -r f; do
-    grep -q '^  pack: epicparty/skills$' "$f" &&
+    grep -Eq '^[[:space:]]+pack: epicparty/skills[[:space:]]*$' "$f" &&
       echo "$(basename "$(dirname "$f")") $(realpath "$f")"
   done |
   sort -u -k2,2
 ```
 
-Each line is a skill's installed name and its file. A skill reached twice — through `.claude/skills` and `.agents/skills`, say — resolves to one file and counts once.
+Where the shell cannot run the pipeline, search the same folders for that line with your search tool. Each line is a skill's installed name and its file. A skill reached twice — through `.claude/skills` and `.agents/skills`, say — resolves to one file and counts once.
 
 Done when every installed skill of the pack is listed once.
 
 ## 2. Collect the settings
 
-Read each skill's `## Settings` section. A skill without one has nothing to ask, and neither has a skill whose section only names settings another skill defines — the delivery skills read the ones `/ep` defines. Every `###` heading under a section is one setting, keyed by its **topic** and its heading.
+Read each skill's `## Settings` section. A skill without one has nothing to ask, and neither has a skill whose section only names settings another skill defines — `/ep-to-story`, `/ep-triage` and `/ep-to-pr` read only the ones `/ep` defines. Every `###` heading under a section is one setting, keyed by its **topic** and its heading.
 
 Two skills that declare the same topic and heading share one setting: ask it once. Where their questions or options differ, name both skills and show the difference before asking, because one of them has drifted.
 
@@ -44,25 +45,27 @@ Done when every setting is listed with its topic, its heading and the skills tha
 
 ## 3. Find the settings home
 
-The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With no such line, this is the first question, the default first:
+The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With neither file present, first ask which to create, recommending `AGENTS.md`, which most agents read. With no such line, this is the first question, the default first:
 
-- **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one heading per setting.
+- **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one `##` heading per setting, named as the setting. Other headings in the file are the project's own notes.
 - **One file** — at a path the user names.
 - **Another form** — as the user describes it.
 
-Write the answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
+Write the answer as one line in that block, creating the block when it is missing — for the default, `` `ep-*` settings: `docs/agents/<topic>.md`, one heading per setting. ``
 
 Done when the settings home is named and recorded.
 
 ## 4. Show what is set
 
-Read every setting at the settings home, then print one table before asking anything:
+Read every setting at the settings home — the heading named as the setting, in its topic's file — then print one table before asking anything. **Skill** is the skill that declares the setting:
 
 ```
 Skill        Topic     Setting      Value
 ep-research  research  Destination  GitHub Discussion, category Research
-ep-upgrade   upgrade   Full gate    — unset
+ep-upgrade   validation  Full gate  — unset
 ```
+
+With **Labels** set, compare the labels it names with the tracker's, and name any missing one in the report.
 
 Done when every setting has a row and a value or `— unset`.
 
@@ -72,7 +75,7 @@ Take the settings in scope — every unset one, or the one the user named — gr
 
 - Its question, and its options with the recommended one first. Settle the recommendation the way the setting's table says — a recommendation that reads the repo, reads it now.
 - The follow-up the chosen option needs.
-- A setting an earlier answer rules out is not asked — **Tracker** at **None** rules out **Labels**. List it in the report as ruled out.
+- A setting that `/ep` `## Settings` or `## Working rules` rules out — under **Tracker** at **None**, or in a repo with no remote — is not asked. List each in the report as ruled out, with its reason.
 - **Skip** is always an answer. A skipped setting stays unset, and its skill asks for it when it first needs it.
 
 Write each answer at the settings home as soon as it is given, in the form the home names, then run any step the setting attaches to its answer — **Labels** offers to create the labels the tracker lacks. An interrupted setup then keeps every answer already given.
@@ -84,6 +87,7 @@ Done when every setting in scope is answered or skipped.
 The table from § 4 again, with the values now set, then:
 
 - **Skipped** — each one, and the skill that will ask for it later.
+- **Ruled out** — each one, and the answer or the fact that ruled it out.
 - **Drift** — each difference § 2 found, with the skills it names.
 - Where the answers live, and that a user can edit them there or run `/ep-setup <setting>` to change one.
 

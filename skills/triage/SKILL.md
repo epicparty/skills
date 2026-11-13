@@ -1,8 +1,9 @@
 ---
 name: triage
-description: Judges one existing issue — still viable, decided enough, labelled right — and ends in one verdict. Use when asked whether a story is still worth building, needs grilling, or is mislabelled.
+description: Judges one existing issue — still viable, decided enough, labelled right — and ends in one verdict. Use when asked whether a story is still worth building, is decided enough to build, or is mislabelled.
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Triage
@@ -21,7 +22,7 @@ Read the **Tracker** setting now, per [Settings](#settings): every triage ends i
 
 Read the issue with its comments, labels, assignees, dependency edges and linked PRs — on GitHub, `gh issue view <n> --comments`, with the edges from [`SPLITTING.md`](../to-story/SPLITTING.md) `## GitHub mechanics`. Where the project keeps a board, read the issue's status on it too. Note who filed it and when: age is evidence in § 2.
 
-Then restate the outcome in one or two sentences, in the domain's own words from the project's glossary ([`DECISIONS.md`](../router/DECISIONS.md)). A story you cannot restate is one you cannot judge.
+Then restate the outcome in one or two sentences, in the domain's own words from the project's glossary — `/ep`'s [`DECISIONS.md`](../router/DECISIONS.md) says where it lives. A story you cannot restate is one you cannot judge.
 
 Done when you hold the body, every comment, the labels, the board status where there is a board, and the dependency edges, and the user would recognise their ask in your restatement.
 
@@ -39,7 +40,7 @@ Done when each front has a finding with a citation — a path, an issue, an ADR 
 
 ## 3. Grade the decisions
 
-Walk `## Solution`, `## Implementation Decisions`, `## Testing Decisions` and `## Out of Scope`, and grade every decision they carry:
+Walk the decisions the body's shape carries ([`STORIES.md`](../to-story/STORIES.md) `## Four shapes`): in a story, `## Solution`, `## Implementation Decisions`, `## Testing Decisions` and `## Out of Scope`; in a discovery body, each open question, missing until it is answered; in a bug, the `## Bugs` fields — observed, expected, reproduction — each present or missing. Grade every decision:
 
 | Grade | Meaning |
 | --- | --- |
@@ -49,20 +50,22 @@ Walk `## Solution`, `## Implementation Decisions`, `## Testing Decisions` and `#
 
 Then hold the whole against the **Ready bar** in [`STORIES.md`](../to-story/STORIES.md) `## Ready`, and the **one-goal** test in [`/ep-to-story` § 2](../to-story/SKILL.md#2-hold-it-to-one-goal) — a second outcome that would be asked for on its own.
 
+A question the code, an ADR or a shipped story already answers is a fact, not a decision: cite the answer and grade it **held**.
+
 A thin decision is not yours to re-make. Put a recommendation beside it, with its reason, and leave the choice where it belongs.
 
 Done when every decision in the body carries a grade, every gap against the Ready bar is named, and the size question has an answer.
 
 ## 4. Check the labels
 
-Read the **Labels** and **Scopes** settings now, per [Settings](#settings). Then check each axis the **Labels** setting defines, current against what the evidence says:
+Read the **Labels** setting now, per [Settings](#settings), and **Scopes** when it is set. Then check each axis the **Labels** setting defines, current against what the evidence says:
 
 - **The title** carries a scope from the **Scopes** vocabulary, where the project uses scopes. An axis that names the same thing as the scope — a product, a layer — agrees with it.
 - **A priority axis** reads off what the setting says each value means, and off the neighbours: what else in this area sits at that priority, and what is blocked on this one. A low priority that a higher one waits on is mislabelled.
 - **A type axis** matches what the body actually changes.
 - **The process label** matches the verdict you are about to give. Where the project keeps a board whose status follows the labels, the status matches them too.
 
-A story still carrying the triage label gets every axis proposed here, and dropping the triage label is part of the delta. A label the verdict needs and the tracker lacks is named in the report, never created. With the **Labels** setting at **None**, this step checks the title alone.
+A story still carrying the triage label gets every axis proposed here, and dropping the triage label is part of the delta. A label the verdict needs and the tracker lacks is named in the report, never created here — only the **Labels** setting's own step offers to create labels, when it is first answered. With the **Labels** setting at **None**, this step checks the title alone.
 
 Done when each axis has a current value, a proposed value and a reason — or reads *unchanged*.
 
@@ -75,8 +78,8 @@ Take the first row that matches:
 | **Close** | Overtaken, superseded, or the premise is gone | Close the issue with the reason; the won't-fix label where it was declined rather than done |
 | **Needs info** | A fact only the reporter holds, and nothing can be judged without it | The info label, and the question as a comment |
 | **Split** | Carries a second goal | [`SPLITTING.md`](../to-story/SPLITTING.md), then triage each child |
-| **Grill** | Any decision **missing**, or thin ones that turn on each other | The discovery label; the questions in § 6 seed `/grilling` |
-| **Settle** | Only **thin** decisions, each with an answer you can recommend and defend | The recommendations, put to the user; on their word, the body is edited to carry them |
+| **Grill** | Decisions that turn on each other, so tightly that no list of questions can be written up front | The discovery label; the decisions in § 6 seed [`/ep-grill`](../grill/SKILL.md), on the user's word |
+| **Settle** | Thin or missing decisions, each standing alone | The questions, listed in the report with your recommendation beside each one you can defend, then asked one at a time (`/ep` `## Working rules`); on their answers, the body is edited to carry them, and the ready label follows when the bar then passes |
 | **Ready** | Passes the Ready bar | The ready label for an agent or for a human; the labels are the whole change |
 
 The rows sit in this order because each makes the rows below it moot: nothing on a dead story is worth grilling, and a story that is really two cannot be graded as one.
@@ -113,20 +116,25 @@ Blocked by — · Blocks SHOP-190 · PRs —
 | Axis | Now | Proposed | Why |
 | --- | --- | --- | --- |
 | `priority` | `p2` | `p1` | SHOP-190 is `p1` and blocked on this. |
-| process | — | `needs-grilling` | One decision missing. |
-| `Status` | Backlog | Triage | Follows the process label. |
+| process | — | `ready-for-agent` | Once both answers are in the body, it passes the bar. |
+| `Status` | Backlog | Ready | Follows the process label. |
 
-### Verdict — Grill
-Close ruled out: the premise holds. Needs info and Split ruled out: nothing only the reporter knows, one goal.
-Questions that seed the grilling:
-1. What does a Shop Owner with a bookmarked export link see after the change — the print view, a notice, or an error page?
-2. Does deleting the stored PDFs ship in this PR or its own stage?
+### Verdict — Settle
+Close ruled out: the premise holds. Needs info and Split ruled out: nothing only the reporter knows, one goal. Grill ruled out: the two decisions stand alone.
+
+1. **The bookmarked export link** — what does a Shop Owner who follows one see after the change?
+   ➡️ A redirect to that invoice's print view: ADR 0009 makes it the one printable form, and the bookmark still lands somewhere useful.
+2. **The stored PDFs** — are they deleted in this PR?
+   ➡️ No, in a later stage of this story: removing live data lands after the code that stops reading it has deployed.
 
 ### Your turn
-1. Say **apply** and I set the labels and status above and post this note on the issue.
-2. Say **grill** and we start on the two questions, in this window.
-3. Say **both** and I do the first, then the second.
+1. Answer the two questions — I ask them one at a time, next — and I write the answers into the body, set the labels and status above, and post this note.
+2. Say **later** and I post this note with the questions, and add the discovery label until they are answered.
 ```
+
+A run that stops before § 5 — no tracker, an issue it cannot read — keeps the header with what it could read, says under `### Verdict — none` where it stopped and why, and ends with **Your turn**.
+
+Under a **Ready** verdict — or a **Settle** that leaves the story ready — **Your turn** also offers to queue it, where `/ep-deliver`'s **Ready signal** is set to a board column or a label: *"Say **queue** and I move it to `Queued` so `/ep-deliver` picks it up."* Without that setting, or with it at **None**, offer nothing.
 
 Sections earn their size from the story. A `Premise — viable` line with three citations is a complete section, and an empty `Decisions` table under a `Ready` verdict says the body has nothing left to grade.
 
@@ -137,9 +145,15 @@ Done when the user can act on the report without opening the issue.
 Nothing above wrote. When the user takes the verdict:
 
 - **Labels and board status in one pass**, where the project keeps a board whose status follows the labels — per `/ep`'s [`BOARD.md`](../router/BOARD.md). Set separately, the two drift.
-- **Settle** edits the body: each recommendation lands in `## Implementation Decisions` or `## Testing Decisions` as a decision with its reason, and a surface the stories missed becomes a numbered story. The body is working material until the work is on the default branch ([`STORIES.md`](../to-story/STORIES.md) `## Frozen once live`); an open story whose work is already live is a **Close**, never an edit.
-- **Grill** continues in this window — `/grilling` on the seed questions, then [`/ep-to-story`](../to-story/SKILL.md) rewrites the body from the same context, per [`/ep` § 4](../router/SKILL.md#4-walk-it).
+- **Settle** on a discovery body sends the answers to [`/ep-to-story`](../to-story/SKILL.md), which rewrites it as a story. On a story, it edits the body: each recommendation lands in `## Implementation Decisions` or `## Testing Decisions` as a decision with its reason, and a surface the stories missed becomes a numbered story. The body is working material until the work is on the default branch ([`STORIES.md`](../to-story/STORIES.md) `## Frozen once live`); an open story whose work is already live is a **Close**, never an edit.
+- **Settle** left unanswered — the user said **later** — posts the note with the questions, and adds the discovery label.
+- **Grill**, on the user's word, continues in this window — [`/ep-grill`](../grill/SKILL.md) on the seed decisions, then [`/ep-to-story`](../to-story/SKILL.md) rewrites the body from the same context, per [`/ep` § 4](../router/SKILL.md#4-walk-it).
 - **Close** carries the reason and the issue or PR that made it moot.
+- **Needs info** posts the question to the reporter as the comment, and adds the info label.
+- **Split** publishes the set through [`SPLITTING.md`](../to-story/SPLITTING.md), once the user approved it, then triages each new story.
+- **Ready** changes the labels and nothing else.
+- **A title change** § 4 proposed: on GitHub, `gh issue edit <n> --title`.
+- **Queue**, only on the user's explicit yes to that offer: set the **Ready signal** — move the card to its column per `/ep`'s [`BOARD.md`](../router/BOARD.md), or add its label. Their yes is them queuing it; never queue on a bare **apply**.
 - **The triage note goes on the issue as a comment** — the verdict, the premise findings and the label delta — so the next agent reading the comments finds the judgement where the story lives.
 
 On GitHub, `gh issue edit <n> --add-label … --remove-label …`, `gh issue comment` and `gh issue close --comment`. On another tracker, the way the **Tracker** setting describes.
@@ -148,7 +162,7 @@ Done when the issue carries the labels, status, body and comment the verdict nam
 
 ## Guardrails
 
-- **Triage reads.** Every write waits for § 7 and the user's word. A verdict is a recommendation; the labels are theirs.
+- **Triage reads.** Every write to the issue waits for § 7 and the user's word. A verdict is a recommendation; the labels are theirs. A missing setting is the one earlier write: it is written when the user answers it.
 - **Every row cites.** A premise finding names a path, an issue or an ADR. A label change names the neighbour or the rule that moved it. A grade with no note is an opinion.
 - **Ready is a real verdict.** A story with nothing left to decide gets a ready label, not a manufactured question. A grilling nobody needed costs the user an hour.
 - **Facts are yours, decisions are the user's.** A thin decision gets a recommendation beside it and stays open until they close it.
@@ -156,7 +170,10 @@ Done when the issue carries the labels, status, body and comment the verdict nam
 
 ## Settings
 
-This skill reads three settings, all defined in `/ep` `## Settings` together with the steps that find them. Triage ends in a change to the issue, so it asks for each one that is missing:
+This skill reads three settings, all defined in `/ep` `## Settings` together with the steps that find them. Triage ends in a change to the issue, so it asks for the two it writes with when they are missing:
 
 - **Tracker** at § 1, with its issue prefix.
-- **Labels** and **Scopes** at § 4.
+- **Labels** at § 4.
+- **Scopes** at § 4, read when set: without it, the title check is skipped.
+
+It also reads `/ep-deliver`'s **Ready signal** at § 6 when it is set, to offer queuing a ready story, and never asks for it.

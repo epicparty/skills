@@ -3,6 +3,7 @@ name: copy
 description: Writes or reviews user-facing copy — labels, field descriptions, buttons, errors, empty states, hero and banner text, design system pages. Use when wording a screen, a field or a message, or when asked to review copy.
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Copy
@@ -13,11 +14,13 @@ Read [`COPY.md`](./COPY.md) and follow it, with the project's own rules from the
 
 ## 1. Recon
 
-Read the **Copy standard** setting now. Then read before writing one line:
+Read before writing one line, then read the **Copy standard** setting — when it is missing, the recon below is what its proposed facts come from:
 
 - The copy around the target: the same page, the sibling fields, the flow's other steps. That copy sets the voice, and a local edit does not invent a new one.
-- The glossary for the terms the target touches (`/ep`'s [`DECISIONS.md`](../router/DECISIONS.md)), and the protected terms the **Copy standard** lists. On a documentation page, the terms are the tokens and props it documents, read from their source.
+- The glossary for the terms the target touches — `/ep`'s [`DECISIONS.md`](../router/DECISIONS.md) says where it lives — and the protected terms the **Copy standard** lists. On a documentation page, the terms are the tokens and props it documents, read from their source.
 - The strings already shipped, for the terms already in use — in the translation catalogs where the project has them, or in the source.
+
+A file under review includes the copy of the project components it renders, unless the user narrows the scope. Say which you included.
 
 Done when you can name the surface, the voice its neighbours set, and the protected terms the target touches.
 
@@ -49,25 +52,25 @@ Done when every string in scope reads on one pass to a distracted reader who did
 
 A rewrite reports one table, before and after, one row per string, with the rule each change applies.
 
-A review reports findings by severity. `HIGH` misleads the reader, speaks technician on a reader surface, names a system term loosely on a documentation page, or hides how to recover from an error. `MEDIUM` breaks voice, terminology or capitalisation consistency. `LOW` is isolated polish. Source is enough to verify: check every button against the action it invokes, every error for a stated fix, every description for the reader rule, and every term against the copy and glossary around it.
+A review reports findings by severity. `HIGH` misleads the reader, leaves them unable to act — a button that names no action, invokes nothing, or invokes another action than the one it names — names a system term loosely on a documentation page, or hides how to recover from an error. `MEDIUM` breaks a `COPY.md` rule without misleading: a technician word where a plain one exists, voice, terminology or capitalisation. `LOW` is isolated polish. Source is enough to verify: check every button against the action it invokes, every error for a stated fix, every description for the reader rule, and every term against the copy and glossary around it.
 
 | Severity | Location | Before | After | Why |
 | --- | --- | --- | --- | --- |
 
-One row per root cause, listing every location it appears in. `Location` is `path/to/file:line`. `Why` names the rule and the reader impact. End with `Block` when any `HIGH` remains, `Approve` otherwise. Never `Approve` coverage you did not inspect. With nothing to report, say "No actionable copy findings".
+One row per root cause, listing every location it appears in. `After` holds the recommended string; other alternatives go in `Why`. `Location` is `path/to/file:line`. `Why` names the rule and the reader impact. End with `Block` when any `HIGH` remains, `Approve` otherwise. Never `Approve` coverage you did not inspect. With nothing to report, say "No actionable copy findings".
 
-Completion criterion: `COPY.md`'s completion criterion is met for every string in scope, every test that named an old string names the new one, and a changed string is in every locale the project ships.
+Completion criterion: `COPY.md`'s completion criterion is met for every string in scope, every test that named an old string names the new one, and a changed string is in every locale the project ships. A review meets it for the strings it proposes; the tests and locales follow when the change lands.
 
 ## Settings
 
-This skill reads one **setting**, **Copy standard**, at § 1. It writes the copy, so it asks for it when it is missing. Each `###` heading below is one setting: its topic, its question, and its options. `/ep-setup` reads the same headings to ask every setting up front.
+This skill reads one **setting**, **Copy standard**, at § 1. Writing copy asks for it when it is missing; a review reads it when set and asks nothing. Each `###` heading below is one setting: its topic, its question, and its options. `/ep-setup` reads the same headings to ask every setting up front.
 
-1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With no such line, ask the user where to keep them, the default first:
-   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one heading per setting.
+1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With neither file present, first ask which to create, recommending `AGENTS.md`, which most agents read. With no such line, ask the user where to keep them, the default first:
+   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one `##` heading per setting, named as the setting. Other headings in the file are the project's own notes.
    - **One file** — at a path the user names.
    - **Another form** — as the user describes it.
 
-   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
+   Write their answer as one line in that block, creating the block when it is missing — for the default, `` `ep-*` settings: `docs/agents/<topic>.md`, one heading per setting. ``
 2. **The setting.** Read it at the settings home. Present: use it, and ask nothing.
 3. **Missing.** Ask its question below, recommended answer first, with the follow-up its option needs. Write the answer at the settings home, tell the user where it went and that they can edit it there or through `/ep-setup`, then continue.
 

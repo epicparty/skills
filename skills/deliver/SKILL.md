@@ -4,6 +4,7 @@ description: Delivers the stories you marked to start — in sequence in this th
 disable-model-invocation: true
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Deliver
@@ -23,7 +24,7 @@ Two properties hold it together:
 - **The tracker is the coordination.** Workers never talk to each other. Everything one needs to know about the others is on the tracker: a claim, a status, a branch, a PR, a comment.
 - **A claim is a race you can lose.** Two workers reading the queue at the same moment see the same story. Losing the race is normal and costs nothing.
 
-Read the **Tracker**, **Ready signal**, **Orchestration** and **Checkout** settings when the run starts, in that order, per [Settings](#settings). The coordinator claims stories and starts work, so it asks for each one that is missing. With **Tracker** at **None**, both roles stop before asking the others, and say so: the queue, the claim and the table all live on the tracker. Route a story given in the chat through `/ep-implement` instead.
+Read the **Tracker**, **Ready signal**, **Orchestration** and **Checkout** settings when the run starts, in that order, per [Settings](#settings). The coordinator claims stories and starts work, so it asks for each one that is missing; a worker run by hand asks only **Tracker** and **Checkout**. With **Tracker** at **None**, both roles stop before asking the others, and say so: the queue, the claim and the table all live on the tracker. Route a story given in the chat through `/ep-implement` instead.
 
 ## The coordinator
 
@@ -39,6 +40,8 @@ A beat carries nothing between beats. Every beat re-derives its picture from the
 
 A story is **in flight** from its claim to its deploy, in one of three stages: **building** (claimed, no PR), **review** (PR open) and **shipping** (merged, deploy unfinished). Where the project keeps a board, each stage is a status on it, and the status is a **claim to be checked**: a worker that died mid-story leaves a card reading building forever, and a stale card reads as work in progress.
 
+In flight is every story at a building, review or shipping stage where the project keeps a board. Without one — or to catch what a board missed — it is every open issue a claim assigned, with a branch linked to it, or with an open PR that closes it, plus every open issue whose comments carry the `**A worker needs a decision**` line: on GitHub, `gh search issues --repo <owner>/<repo> --state open --match comments '"A worker needs a decision"'`.
+
 For every in-flight story, take the first row that matches:
 
 | What exists | Reading |
@@ -47,7 +50,7 @@ For every in-flight story, take the first row that matches:
 | An unanswered `**A worker needs a decision**` comment, on the issue or its PR | Parked. Resume nothing; list it under Parked. Where the board has a Parked stage, the card reads Parked. |
 | A merged PR, the deploy unfinished | Shipping |
 | An open PR | Review |
-| A pushed branch, no PR | Building — it rejoins at `/ep-to-pr` |
+| A pushed branch linked to the issue (on GitHub, `gh issue develop --list <n>`), no PR | Building — it rejoins at `/ep-to-pr` |
 | No branch and no PR | Nothing was built. Remove your claim, and return it to the queue: restore the Ready signal the claim took off, where it took one. A story named on the run only loses your assignment. That return is the one Ready signal write a skill makes. |
 
 The closed row moves a card to done by hand, where a board would usually do it on the close. That is safe here because the closed state **is** the confirmation, read before the write: a card closed before the board's automation existed, or written over afterwards, has no second chance to correct itself.
@@ -58,14 +61,14 @@ Done when every in-flight story matches something that actually exists, and ever
 
 ### 2. Pre-flight the queue
 
-The queue is the stories named on the run, or else every story the **Ready signal** marks. Read each **once, before anything starts**, and ask everything it needs in one round. A question asked here is answered while workers run; the same question found mid-build parks a story and costs a day.
+The queue is the stories named on the run, or else every story the **Ready signal** marks. Under **None** with no story named, there is no queue: say so, and stop. Read each **once, before anything starts**, and ask everything it needs in one round — each question as a comment on its issue that opens with the `**A worker needs a decision**` line, so § 6 sees the reply, and listed in the report. A question asked here is answered while workers run; the same question found mid-build parks a story and costs a day.
 
 Check each against two things:
 
 - **The Ready bar** in [`STORIES.md`](../to-story/STORIES.md) `## Ready`. A story marked to start without a ready label is the common case, not an error: the signal is intent, and the bar is a property.
 - **The irreversible steps** in [What earns a go/no-go](#what-earns-a-gono-go). A destructive migration step, a production write, a credential rotation and a one-way third-party call are all readable from a story's text.
 
-**Sort, never block.** A story carrying a question is named in the report and left in the queue; the rest are free to claim. One vague story must not stall three good ones.
+**Sort, never block.** A story carrying a question stays in the queue, shows under **Parked** until the answer comes, and is not claimed; the rest are free to claim. One vague story must not stall three good ones.
 
 What this cannot catch is what the code turns out to look like. Say that rather than implying the queue is now safe.
 
@@ -78,7 +81,7 @@ Take the queue in priority order — the priority axis where the **Labels** sett
 | Signal | Reading |
 | --- | --- |
 | An open blocking edge ([`SPLITTING.md`](../to-story/SPLITTING.md)) | Not free. The blocker ships first. |
-| Someone is assigned | Somebody holds it. Not free. |
+| Someone other than this run's own claim is assigned | Somebody holds it. Not free. |
 | Its scope matches a story in flight | Assume the same files. Not free. |
 | A scope that every other part depends on — a shared layer, root files — while anything at all is in flight | It fans out to every gate. Not free. |
 
@@ -88,7 +91,7 @@ Done when every queued story is free, or named with the signal that held it.
 
 ### 4. Deliver, per Orchestration
 
-- **In sequence, in this thread** — take the first free story, run the [worker](#the-worker) on it here, then come back to step 3. Stop when nothing is free.
+- **In sequence, in this thread** — before the first claim, run the worker's [§ 1 check](#1-check-this-checkout) on this checkout: a dirty checkout stops the beat before a claim, not after. Then take the first free story, run the [worker](#the-worker) on it here, then come back to step 3. Stop when nothing is free.
 - **Parallel threads it starts** — count the stories in flight. For each free story, up to the setting's most workers at once: [claim it](#2-claim-it), then start one thread with the harness's thread tool, running `/ep-deliver <issue>` in a checkout of the kind the **Checkout** setting gives a new story. Name each thread after its story, so the user can find it.
 - **Parallel, started by you** — start nothing. Name each free story beside a free checkout of a kind the **Checkout** setting lists, so the user can run `/ep-deliver <issue>` there.
 
@@ -98,7 +101,7 @@ Done when every free story is delivered, started, or named for the user — up t
 
 ### 5. Print the table
 
-One row per story in flight, then the tails. The table **is** the report — there is no prose summary above it.
+One row per story in flight, then the tails. The table **is** the beat's report — there is no prose summary above it. Under **In sequence**, the run ends in § 7's report, with this table as its details.
 
 ```
 Issue     Story                                  Stage     For   PR    Waiting on
@@ -117,6 +120,7 @@ Every column comes from the tracker and `git`, with issues named by the **Tracke
 - **Waiting on** — the concrete blocker: a named failing check, an unresolved review thread, a deploy run id. `—` means nothing is blocking and the worker is simply working.
 - **Queued** — in claim order, and every held story names its cause.
 - **Parked** and **Not ready** — the stories waiting on you, and why.
+- **Ready, not queued** — when the queue is empty, the stories at the Ready stage, so you can see what you could queue next.
 
 Recompute the ordering every beat. Stories join the queue while workers run, so an order computed once is wrong by the next beat.
 
@@ -126,7 +130,7 @@ Done when every in-flight story has a row whose stage, age and blocker match the
 
 Steering is a **comment**. It survives a crashed session, it works from every tool, and it lands where the decision belongs.
 
-Each beat, read new comments on the in-flight issues and their PRs. A comment that changes what a worker should do gets relayed to the worker holding that story. A comment answering a parked question moves that story on: drop the label the question added, move a Parked card to the stage its branch or PR reads in § 1, and say so in the report. The next free worker resumes it from there.
+Each beat, read new comments on the in-flight issues and their PRs. A comment that changes what a worker should do gets relayed to the worker holding that story. A question counts as answered once a later comment exists that is not a worker's own — every worker comment opens with a bold marker line. An answer moves that story on: drop the label the question added, where it added one, move a Parked card to the stage its branch or PR reads in § 1, and say so in the report. The next free worker resumes it from there.
 
 Where a worker is reachable through the harness — a thread this coordinator started — relay immediately and say you did. Where it is not, the comment stands on the issue and the worker picks it up at its next stage boundary. Say that too, because the difference is whether your instruction lands in seconds or in twenty minutes.
 
@@ -144,7 +148,7 @@ One story, in this checkout. Started by the coordinator, in a thread or in seque
 
 ### 1. Check this checkout
 
-`git status --porcelain` empty, no merge or rebase in progress, and on the default branch at `origin/<default>`. A dirty checkout is **somebody's work** — stop, name the files, and change nothing (`/ep` `## Working rules`).
+`git status --porcelain` empty, no merge or rebase in progress, and at `origin/<default>` — on the default branch, or on a fresh branch with no commits past it, as some checkout kinds start — the local default branch where the repo has no remote. A dirty checkout is **somebody's work** — stop, name the files, and change nothing (`/ep` `## Working rules`).
 
 Then find this checkout's kind in the **Checkout** setting, and confirm its setup has run. A checkout whose kind lists a setup step that has not run is setup you own: run it, or — when it needs the user — stop and say which checkout needs what. The worker never reaches into a sibling checkout, and never creates one.
 
@@ -219,14 +223,14 @@ A parked story is resumed by whichever worker next finds it: an issue with a pus
 
 ## Settings
 
-This skill reads two settings `/ep` `## Settings` defines — **Tracker** and **Checkout** — and two of its own, **Ready signal** and **Orchestration**. It claims stories and starts work, so it asks for each one that is missing. It reads **Labels** and **Scopes** at step 3 when they are set. Each `###` heading below is one setting: its topic, its question, and its options. `/ep-setup` reads the same headings to ask every setting up front.
+This skill reads two settings `/ep` `## Settings` defines — **Tracker** and **Checkout** — and two of its own, **Ready signal** and **Orchestration**. It claims stories and starts work, so it asks for each one that is missing. It reads **Labels** and **Scopes** at the coordinator's § 3 when they are set, and asks for **Labels** only when it is about to write a label — the discovery or info label at an escalation. Each `###` heading below is one setting: its topic, its question, and its options. `/ep-setup` reads the same headings to ask every setting up front.
 
-1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With no such line, ask the user where to keep them, the default first:
-   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one heading per setting.
+1. **The settings home.** The `## Agent skills` block of the root `AGENTS.md` — or `CLAUDE.md`, whichever the project has — names where `ep-*` settings live and in what form. With neither file present, first ask which to create, recommending `AGENTS.md`, which most agents read. With no such line, ask the user where to keep them, the default first:
+   - **`docs/agents/<topic>.md`** (default) — one Markdown file per topic, one `##` heading per setting, named as the setting. Other headings in the file are the project's own notes.
    - **One file** — at a path the user names.
    - **Another form** — as the user describes it.
 
-   Write their answer as one line in that block, creating the block when it is missing. With neither file present, ask which to create before anything else, recommending `AGENTS.md`, which most agents read.
+   Write their answer as one line in that block, creating the block when it is missing — for the default, `` `ep-*` settings: `docs/agents/<topic>.md`, one heading per setting. ``
 2. **The setting.** Read it at the settings home. Present: use it, and ask nothing.
 3. **Missing.** Ask its question below, recommended answer first, with the follow-up its option needs. Write the answer at the settings home, tell the user where it went and that they can edit it there or through `/ep-setup`, then continue.
 
@@ -240,7 +244,7 @@ Topic `delivery`. Question: *How do you mark a story you want started now?*
 | **A label** | The label's name, such as `agent-queue` | The project has no board |
 | **None** | — | Stories are named on the run, every time |
 
-The signal says **you want this started now**, which is intent. A ready label says the story is specified well enough to build, which is a property of the story. Keep them apart, so a story can be honestly ready and still not wanted yet: a ready label is never the signal. Only a human sets the signal — a skill only returns it (§ 1) — and naming stories on the run skips it.
+The signal says **you want this started now**, which is intent. A ready label says the story is specified well enough to build, which is a property of the story. Keep them apart, so a story can be honestly ready and still not wanted yet: a ready label is never the signal. Only a human sets the signal — a skill sets it only on their explicit yes (`/ep-triage` offers it on a ready story), or returns it (§ 1) — and naming stories on the run skips it.
 
 ### Orchestration
 
@@ -249,7 +253,7 @@ Topic `delivery`. Question: *How should the coordinator deliver the stories it m
 | Option | Follow-up | Recommend when |
 | --- | --- | --- |
 | **In sequence, in this thread** | — | Default: one checkout, or work you want to watch as it happens |
-| **Parallel threads it starts** | The most workers at once, and the harness tool that starts a thread — such as T3 Code's `create_threads` | The harness has a thread tool, and the **Checkout** setting has a kind a new thread can set up alone |
+| **Parallel threads it starts** | The most workers at once, and the harness tool that starts a thread — such as T3 Code's `create_threads` | A thread tool is among this session's tools, and the **Checkout** setting has a kind a new thread can set up alone |
 | **Parallel, started by you** | — | Several prepared checkouts, and no thread tool |
 
 Every worker takes its own checkout, so the width is bounded by the machine: recommend a width from what one checkout's setup and full suite cost to run.

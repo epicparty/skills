@@ -45,7 +45,7 @@ Instructional copy says "you", never "the user", "the guest", "the admin". A des
 
 "We" is for warm, low-stakes copy where the product is talking: a hero, a welcome. In an error it reads as deflection. Prefer "Unable to save" to "We're having trouble saving".
 
-Possessives are rare: "Favorites", not "Your favorites". One perspective per flow.
+Possessives are rare in labels and headings: "Favorites", not "Your favorites". In a sentence that names the reader's own things — "Your cart is empty" — one reads naturally. One perspective per flow.
 
 ## Plain words, short lines
 

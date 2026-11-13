@@ -3,17 +3,18 @@ name: explore
 description: Maps what a piece of work involves before anything is decided — provenance, seams, prior art, open questions. Use at the start of unfamiliar work.
 metadata:
   pack: epicparty/skills
+  version: 0.1.0
 ---
 
 # Explore
 
 The first move on a piece of work. Explore ends in a **brief**: what already exists, where the change lands, and what nobody has decided yet.
 
-It answers questions. The decisions stay with the user, and the code stays untouched — a brief is what [`/ep`](../router/SKILL.md) reads to choose a route, and what `/grilling` needs before it can ask a question worth answering.
+It answers questions. The decisions stay with the user, and the code stays untouched — a brief is what [`/ep`](../router/SKILL.md) reads to choose a route, and what any question put to the user is built on.
 
 ## 1. Restate the request
 
-One or two sentences, in the project's own words — the domain terms from its glossary, where it keeps one: `CONTEXT.md`, or the `CONTEXT-MAP.md` that routes to one per context.
+One or two sentences, in the project's own words — the domain terms from its glossary, where it keeps one — `/ep`'s [`DECISIONS.md`](../router/DECISIONS.md) says where.
 
 A request you cannot restate is a request you have not understood, and every step below would explore the wrong thing.
 
@@ -34,7 +35,7 @@ Name where the change lands, concretely:
 - **The scope** — from the **Scopes** setting, when the settings home has one; read it, never ask for it. A scope that is not in the vocabulary means the work is scoped wrong, or the vocabulary needs a finding raised against it. With no setting, skip this line.
 - **Packages and apps** touched, and the **nearest `AGENTS.md` or `CLAUDE.md`** to each.
 - **The standards that govern it** — the documents and skills those agent files route the touched paths to, rather than a guess at which files apply.
-- **The validation command** the work will have to pass, as the agent files name it.
+- **The validation command** the work will have to pass, as the agent files name it — or, without agent files, the `package.json` scripts.
 
 Done when every path the work will touch has its scope, its nearest agent file, and its routed standards named.
 
@@ -66,7 +67,7 @@ Short and scannable:
 - Where it lands — product, area, packages, standards
 - The seam, the prior art, the test level
 - **What is unsettled** — the list, as questions to the user
-- **The route you would take**, per `/ep`'s table, and the property of the request that chose it
+- **The route you would take**, per `/ep`'s table, and the property of the request that chose it — left out when another skill ran this one and the route is already set
 
 Done when the user can answer the unsettled list without opening a file.
 
@@ -74,4 +75,4 @@ Done when the user can answer the unsettled list without opening a file.
 
 - **Explore reads.** Edits, commits and issues are the later stages' work; this one leaves the tree exactly as it found it.
 - **Depth follows stakes.** A one-line copy change earns a two-minute look. A change across a critical path earns every step above in full. Say which you did.
-- **An empty unsettled list is a real result.** Some work genuinely has nothing left to decide, and saying so is what sends `/ep` straight to `/ep-to-story`. Manufacturing a question to look thorough costs the user a grilling they did not need.
+- **An empty unsettled list is a real result.** Some work genuinely has nothing left to decide, and saying so is what sends `/ep` straight to `/ep-to-story`. Manufacturing a question to look thorough costs the user an answer they did not need to give.

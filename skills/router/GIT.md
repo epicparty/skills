@@ -47,7 +47,19 @@ git rev-parse HEAD                  # the old head SHA: it must match the PR's h
 git rebase origin/<default>
 ```
 
-Resolve each conflicting commit as the rebase stops on it — `/resolving-merge-conflicts` where it is installed — and continue until every commit is replayed. A resolution belongs to the commit that conflicted, so each commit still stands alone. Keep the rebase to conflict resolution: a review fix is its own commit, made on top of the rebased branch.
+Resolve each conflicting commit as the rebase stops on it, and continue until every commit is replayed. A resolution belongs to the commit that conflicted, so each commit still stands alone. Keep the rebase to conflict resolution: a review fix is its own commit, made on top of the rebased branch.
+
+<!-- upstream: mattpocock/skills skills/engineering/resolving-merge-conflicts/SKILL.md (removed upstream at daa01d8) -->
+
+Each stop, in order:
+
+1. **Read the state** — `git status`, the conflicting files, and the commit being replayed.
+2. **Find why each side changed.** Read the commit messages, then the PRs and issues behind them. A hunk resolved without knowing either intent is a guess.
+3. **Resolve each hunk.** Keep both intents where they fit together. Where they cannot, keep the one that matches the default branch's later decision, and name the trade-off in your report. Add no behaviour neither side had.
+4. **Run the checks** the change touches — `/ep-implement`'s **Scoped check** setting where it is set, or the project's typecheck and tests — and fix what the resolution broke.
+5. **Stage and continue** — `git add` the resolved files, then `git rebase --continue`.
+
+Abort the rebase only when the user asks: a conflict is resolved, not walked away from.
 
 The rebased head is a commit nobody has tested, so the project's full suite runs on the head you push. Push with a lease pinned to the old head SHA:
 
