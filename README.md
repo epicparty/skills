@@ -2,6 +2,8 @@
 
 A delivery workflow for coding agents: from a request to a merged, deployed pull request. Explore the work, write it up as a story, build it test-first, open the PR, watch it, and ship it. A router skill reads a request and walks you through the route.
 
+**Credit:** several skills build on [Matt Pocock's skills](https://github.com/mattpocock/skills) — `grill`, `diagnose`, `architect` and `writing-for-agents`, and the test-first, seams, glossary and hand-off parts of others. Thank you, Matt. [`UPSTREAM.md`](./UPSTREAM.md) lists what came from where.
+
 The skills install under **your project's prefix**. Generic names like `implement` or `copy` say nothing about where a skill comes from, and they collide with other packs. With the prefix `acme`, you get `/acme` (the router), `/acme-implement`, `/acme-to-pr`, and so on. Each project picks its own.
 
 ## Install
