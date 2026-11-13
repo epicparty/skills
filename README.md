@@ -48,11 +48,13 @@ Do not install this repository with `npx skills add epicparty/skills` directly. 
 | `<prefix>-upgrade` | Upgrades those dependencies and migrates the code. |
 | `<prefix>-writing-for-agents` | How to write skills, `AGENTS.md` and anything else an agent reads. |
 
+You start four of them yourself, by typing the command: `/<prefix>`, `/<prefix>-setup`, `/<prefix>-deliver` and `/<prefix>-upgrade`. They carry `disable-model-invocation: true`, so an agent asked to run one is refused.
+
 GitHub (issues, pull requests, Projects) is built in. Another tracker works when you describe it in the **Tracker** setting, and a project with no tracker answers **None**.
 
 ## Settings
 
-The skills ask for a project fact the first time they need it: the tracker, the labels, how to run the full test suite, how a deploy is confirmed. Each answer is saved where you choose — by default `docs/agents/<topic>.md`, one file per topic — and is never asked again. Run `/<prefix>-setup` to answer them all at once, or to change one.
+The skills ask for a project fact the first time they need it: the tracker, the labels, how to run the full test suite, how a deploy is confirmed. Each answer is saved where you choose — by default `docs/agents/<topic>.md`, one file per topic — and is never asked again. Type `/<prefix>-setup` yourself to answer them all at once, or to change one; an agent can't start it.
 
 Each skill declares its own settings in its `## Settings` section, so the list grows with the skills you install.
 
@@ -75,7 +77,7 @@ Then it checks the result: every name matches its folder, every link and heading
 - `outdated` and `upgrade` work on pnpm workspaces only. The other skills read the package manager from the lockfile.
 - Unattended runs (`/loop`) read the board and the dependency edges with `gh api`, and link branches with `gh issue develop`. Allow both in your agent's permissions, or each beat stops at its first read.
 - A repo with no remote works up to a local commit: the skills that push, open a PR, merge or deploy stop there and say so.
-- The `skills` CLI records each skill it installs in `skills-lock.json`. This CLI removes its own skills from that file, because the `skills` CLI cannot update them; `update` here replaces `skills update` for this pack.
+- The `skills` CLI records each skill it installs in `skills-lock.json`. This CLI removes its own skills from that file, because the `skills` CLI cannot update them; `update` here replaces `skills update` for this pack. The `skills` CLI also upgrades an existing `skills-lock.json` to its current format: it moves a version 1 lock to version 2, which hashes a skill's files differently, so every entry's `computedHash` changes even when its files did not. Commit the change.
 
 ## Versions
 
