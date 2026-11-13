@@ -99,9 +99,9 @@ Releases run on [Changesets](https://github.com/changesets/changesets), the way 
 
 1. **Every pull request that changes the pack adds a changeset** — `npx changeset` — whose entry starts with the skills it changes. [`.changeset/README.md`](./.changeset/README.md) has the format and the bump levels. CI fails a pull request that changes a skill and names it in no changeset.
 2. **On each push to `main`**, the Release workflow opens or updates a `chore: release` pull request. It bumps the pack's version and each named skill's, and writes `CHANGELOG.md`.
-3. **Merging that pull request is the release.** The workflow tags `v<version>` and publishes a GitHub release from the changelog.
+3. **Merging that pull request is the release.** The workflow publishes the new version to npm through [trusted publishing](https://docs.npmjs.com/trusted-publishers) — no npm token is stored anywhere — tags `v<version>`, and publishes a GitHub release from the changelog.
 
-Until npm publishing is on, a project installs a release from GitHub: `npx github:epicparty/skills#v<version> add --prefix acme`. To turn npm on, set up [trusted publishing](https://docs.npmjs.com/trusted-publishers) for `@epicparty/skills`, add `id-token: write` to the workflow's permissions, and change its `publish-script` to `npx changeset publish`.
+npm must trust the workflow: on npmjs.com, `@epicparty/skills` → **Settings** → **Trusted publishing** names GitHub Actions, `epicparty/skills`, `release.yml`.
 
 The GitHub repository must allow it: **Settings → Actions → General → Allow GitHub Actions to create and approve pull requests**.
 

@@ -2,8 +2,8 @@ name: Release
 
 # On every push to main: with changesets pending, open or update the "chore: release" pull
 # request that bumps the versions and writes CHANGELOG.md. With none pending — that pull
-# request just merged — tag the new version and publish a GitHub release from its changelog.
-# npm publishing is off for now: README.md `## Releasing` says how to turn it on.
+# request just merged — publish the new version to npm through trusted publishing (no
+# token), tag it, and publish a GitHub release from its changelog.
 
 on:
   push:
@@ -17,17 +17,19 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      id-token: write
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
+          registry-url: https://registry.npmjs.org
           cache: npm
       - run: npm ci
       - uses: changesets/action@v2
         with:
           version-script: npm run version
-          publish-script: npx changeset git-tag
+          publish-script: npx changeset publish
           commit-message: "chore: release"
           pr-title: "chore: release"
           create-github-releases: true
