@@ -65,7 +65,7 @@ The skills in this repository are written with the prefix `ep`, and the router's
 - links into a sibling skill's folder, `../<skill>/`, to `../<prefix>-<skill>/`, and `../router/` to `../<prefix>/`;
 - each `SKILL.md`'s `name` to its installed name: `router` becomes `<prefix>`.
 
-Then it checks the result: every name matches its folder, every link and heading anchor resolves, and every skill named in the text is installed. Each skill also carries `pack: epicparty/skills` under `metadata`, which is how `/<prefix>-setup` finds the pack's skills whatever the prefix.
+Then it checks the result: every name matches its folder, every link and heading anchor resolves, and every skill named in the text is installed. Only a pack skill's name counts as a skill reference, so any prefix works, including one that starts English words: with `up`, "an up-to-date base" stays text. Each skill also carries `pack: epicparty/skills` under `metadata`, which is how `/<prefix>-setup` finds the pack's skills whatever the prefix.
 
 `npx @epicparty/skills check` runs the same check on an installed project.
 
