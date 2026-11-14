@@ -14,7 +14,7 @@ npx @epicparty/skills add --prefix acme
 
 Without `--prefix`, the CLI asks for one. It builds the skills under that prefix and installs them with the [`skills`](https://github.com/vercel-labs/skills) CLI, which links them for every agent it supports (Claude Code, Codex, Cursor and others). Pass `--agent <name>` to choose agents.
 
-The prefix and the version go into `epicparty-skills.json` at the project root. Commit it.
+The prefix and the version go into `epicparty-skills.json` at the project root. Commit it. If your formatter checks JSON (Biome, Prettier), exclude this file from it: `update` rewrites it in its own layout.
 
 ```sh
 npx @epicparty/skills@latest update   # same prefix and agents, newer skills
@@ -29,7 +29,7 @@ Do not install this repository with `npx skills add epicparty/skills` directly. 
 | Skill | What it does |
 | --- | --- |
 | `<prefix>` | Reads a request, names the route through the skills, and walks it. Start here. `/<prefix> handoff` hands a thread to a fresh agent. |
-| `<prefix>-setup` | Asks every unset setting up front, or changes one. |
+| `<prefix>-setup` | Proposes a value for every unset setting in one table to accept or amend, or changes one. |
 | `<prefix>-explore` | Maps what a piece of work involves before anything is decided. |
 | `<prefix>-grill` | Grills you on a plan in rounds of questions, and keeps the glossary and ADRs as it settles things. |
 | `<prefix>-to-story` | Writes the conversation up as one user story on the tracker. |
@@ -54,7 +54,7 @@ GitHub (issues, pull requests, Projects) is built in. Another tracker works when
 
 ## Settings
 
-The skills ask for a project fact the first time they need it: the tracker, the labels, how to run the full test suite, how a deploy is confirmed. Each answer is saved where you choose — by default `docs/agents/<topic>.md`, one file per topic — and is never asked again. Type `/<prefix>-setup` yourself to answer them all at once, or to change one; an agent can't start it.
+The skills ask for a project fact the first time they need it: the tracker, the labels, how to run the full test suite, how a deploy is confirmed. Each answer is saved where you choose — by default `docs/agents/<topic>.md`, one file per topic — and is never asked again. Type `/<prefix>-setup` yourself to settle them all at once, or to change one; an agent can't start it. It reads the repo first and shows one table, each setting with a recommended value and the reason for it, and asks one question: accept them all, or name the rows to change (`3: None; skip 5`). Accepting also approves the actions the table lists, such as creating missing labels; nothing is written or created before that.
 
 Each skill declares its own settings in its `## Settings` section, so the list grows with the skills you install.
 
