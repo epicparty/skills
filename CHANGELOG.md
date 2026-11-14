@@ -1,5 +1,15 @@
 # @epicparty/skills
 
+## 0.4.0
+
+### Minor Changes
+
+- [#10](https://github.com/epicparty/skills/pull/10) [`563d160`](https://github.com/epicparty/skills/commit/563d16052a0e9abf71580bec426e3438be668c66) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `babysit`: the **External reviewers** setting has a third kind, **automatic**, for a bot that reviews every PR on its own, such as CodeRabbit or Copilot code review. Its row names the check or status its run shows on the head commit and the comment that re-requests it. Step 8 takes its review as the PR's external review on every PR, never asks about it, and re-requests it only when its run is missing on the head commit. The merge gate waits for its run to finish on the head SHA and for its findings to carry a disposition. Setup recommends the automatic kind for an installed bot that reviews PRs nobody asked it on. Normal and security reviewers keep their request-only rules.
+
+### Patch Changes
+
+- [#13](https://github.com/epicparty/skills/pull/13) [`891ba8b`](https://github.com/epicparty/skills/commit/891ba8b64c535aca4fc4a300ee2e4f1fd14ad46d) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `babysit`: an automatic reviewer is re-requested whenever the head commit has no review from it: its run missing, or ended skipped, rate limited or neutral, unless its row counts that skip as a review, such as "No files to review". The substantial-push rule applies only to normal and security reviewers. A re-request after a rate limit waits until the limit lifts. Each request counts against the row's cap, and with the cap spent and still no review, the gate holds the PR and the report says so.
+
 ## 0.3.0
 
 Not published to npm: a release pull request overwritten just before its merge left out [#10](https://github.com/epicparty/skills/pull/10). These changes ship in 0.4.0.
