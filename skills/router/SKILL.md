@@ -49,6 +49,7 @@ Done when you can name the issue this work came from or say it has none, name wh
 | An open PR that needs carrying to merged | `/ep-ship` |
 | An idea to keep, not to build now — "save it as an idea" | A draft in the board's Ideas stage ([`BOARD.md`](./BOARD.md) `board_idea`). Ends in the draft, not a PR |
 | "Check the board", "update the statuses" | [Checking the board](./BOARD.md#checking-the-board). Ends in a report of every card moved, not a PR |
+| A release to cut — the merged changes are ready to ship together | `/ep-release`. Ends in a published version, not a PR of the work |
 | Several stories marked to start, or named together | `/ep-deliver` — the coordinator walks them in sequence or starts a worker per story, and prints where each one stands |
 
 Where two rows fit, the unsettled decisions choose: decisions that turn on each other, and the request is an idea to grill; a few or none, and it is a feature to build, with the questions asked on the way. `/ep-triage` after `/ep-to-story` is quick — a story written to the bar earns its ready label in one pass — and it keeps the labels with the one skill that owns them.
@@ -242,6 +243,29 @@ Topic `checkout`. Question: *Which kinds of checkout does the work happen in, an
 | **These kinds** | One row per kind: how to recognise it (a path, a directory name), its setup command, and its cleanup once the work merged — switch back to the default branch, or commands, and whether the user chooses among them. Then which kind a worker started in parallel gets (`/ep-deliver`) | The project works in worktrees, numbered clones, or a tool that prepares them |
 
 Under **This checkout**, setup is a fresh branch off the default branch, and cleanup switches back to the default branch, pulls it, and deletes the merged branch locally and remotely.
+
+### Releases
+
+Topic `release`. Question: *Does the project version what it ships, and how is a release cut and confirmed?*
+
+| Option | Follow-up | Recommend when |
+| --- | --- | --- |
+| **None** | — | Nothing is versioned: a merge is the release, as for a product deployed on merge. No `.changeset/`, no release tool or workflow, no version tags |
+| **Changesets** | Which changes add a changeset; the release workflow and its release pull request; what publishing does — `npm publish`, a staged publish approved with 2FA, a deploy — and its receipt, such as `npm view <package> version`; the project's own bump rules, where it has them | `.changeset/config.json` exists |
+| **Commit-driven** | The tool — release-please, semantic-release — the commit types that bump, how a release is cut, what publishing does and its receipt | The tool's config or workflow exists |
+| **Tags by hand** | Where the version is bumped, the tag format, what publishes on a tag, and its receipt | Version tags exist (`git tag --list 'v*'`) and no tool cuts them |
+
+A release is the user's call, made when a batch of changes is ready: [`/ep-release`](../release/SKILL.md) cuts one when they ask, never after every merge.
+
+**Bump rules**, unless the setting names the project's own. Ask what a project using the release experiences:
+
+| Bump | When | For example |
+| --- | --- | --- |
+| `patch` | Nothing new to learn: a fix that makes a thing do what it already said, clearer wording, a step tightened inside its stated purpose | A check that misread valid input; a race in a claim that promised to be exclusive |
+| `minor` | Something new: a capability, a command, a step, a setting or an option, or behaviour a user would notice | A new verification step; a new kind of reviewer |
+| `major` | A project must act: a renamed or removed command or setting, a moved file, a changed default that breaks an existing setup. Before 1.0.0 it is a `minor` whose entry starts with **Action:** and says what to do | A renamed setting; a settings file that moved |
+
+The highest bump in a release sets its version.
 
 ## Guardrails
 
