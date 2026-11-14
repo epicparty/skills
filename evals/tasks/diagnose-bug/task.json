@@ -1,0 +1,14 @@
+{
+  "skill": "diagnose",
+  "split": "train",
+  "settings": true,
+  "prompt": "/ev-diagnose\n\n`parseDuration('1h30m')` in `src/duration.mjs` returns 1800, but it should return 5400 seconds. I'm not around for this one: proceed on your own ranking of the hypotheses, and don't ask me anything.",
+  "graders": [
+    { "name": "on-a-branch" },
+    { "name": "suite-green" },
+    { "name": "new-tests-red-on-base", "paths": ["src"] },
+    { "name": "existing-tests-kept", "files": ["test/duration.test.mjs"] },
+    { "name": "hidden-tests-pass", "into": "test" },
+    { "name": "no-debug-logs", "paths": ["src", "test"] }
+  ]
+}

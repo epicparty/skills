@@ -1,0 +1,10 @@
+{
+  "name": "notekit",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "node --check src/index.mjs",
+    "test": "node --test"
+  }
+}

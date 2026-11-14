@@ -1,0 +1,43 @@
+{
+  "skill": "setup",
+  "split": "train",
+  "settings": false,
+  "prompt": "/ev-setup\n\nI'm away from the keyboard for this run. When you reach the question that asks whether to accept the table, take my answer as \"Accept all\", and carry on to the end.",
+  "graders": [
+    {
+      "name": "settings-home-recorded",
+      "file": "AGENTS.md"
+    },
+    {
+      "name": "setting-written",
+      "file": "docs/agents/issue-tracker.md",
+      "heading": "Tracker",
+      "matches": "None"
+    },
+    {
+      "name": "setting-written",
+      "file": "docs/agents/testing.md",
+      "heading": "Test levels"
+    },
+    {
+      "name": "setting-written",
+      "file": "docs/agents/validation.md",
+      "heading": "Scoped check",
+      "matches": "npm (run )?test"
+    },
+    {
+      "name": "setting-absent",
+      "file": "docs/agents/issue-tracker.md",
+      "heading": "Labels"
+    },
+    {
+      "name": "setting-absent",
+      "file": "docs/agents/validation.md",
+      "heading": "Full suite"
+    },
+    {
+      "name": "questions-at-most",
+      "max": 1
+    }
+  ]
+}
