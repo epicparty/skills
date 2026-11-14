@@ -46,9 +46,10 @@ Do not install this repository with `npx skills add epicparty/skills` directly. 
 | `<prefix>-research` | Investigates a question against primary sources. |
 | `<prefix>-outdated` | Reports which dependencies of a pnpm workspace have newer releases, and what changed. |
 | `<prefix>-upgrade` | Upgrades those dependencies and migrates the code. |
+| `<prefix>-release` | Cuts a release when the merged changes are ready: checks each bump, cuts the version, confirms it published. Opt-in, through the **Releases** setting. |
 | `<prefix>-writing-for-agents` | How to write skills, `AGENTS.md` and anything else an agent reads. |
 
-You start four of them yourself, by typing the command: `/<prefix>`, `/<prefix>-setup`, `/<prefix>-deliver` and `/<prefix>-upgrade`. They carry `disable-model-invocation: true`, so an agent asked to run one is refused.
+You start five of them yourself, by typing the command: `/<prefix>`, `/<prefix>-setup`, `/<prefix>-deliver`, `/<prefix>-upgrade` and `/<prefix>-release`. They carry `disable-model-invocation: true`, so an agent asked to run one is refused.
 
 GitHub (issues, pull requests, Projects) is built in. Another tracker works when you describe it in the **Tracker** setting, and a project with no tracker answers **None**.
 
@@ -100,9 +101,10 @@ npx changeset                                        # describe a change for the
 Releases run on [Changesets](https://github.com/changesets/changesets), the way [mattpocock/skills](https://github.com/mattpocock/skills) runs them:
 
 1. **Every pull request that changes the pack adds a changeset** — `npx changeset` — whose entry starts with the skills it changes. [`.changeset/README.md`](./.changeset/README.md) has the format and the bump levels. CI fails a pull request that changes a skill and names it in no changeset.
-2. **On each push to `main`**, the Release workflow opens or updates a `chore: release` pull request. It bumps the pack's version and each named skill's, and writes `CHANGELOG.md`.
-3. **Merging that pull request stages the release.** The workflow stages the new version on npm through [trusted publishing](https://docs.npmjs.com/trusted-publishers) — no npm token is stored anywhere — tags `v<version>`, and publishes a GitHub release from the changelog.
-4. **A maintainer approves it with 2FA**, and only then can anyone install it: on npmjs.com under the package's staged versions, or `npm stage list @epicparty/skills`, then `npm stage approve <stage-id>`. The run's summary says so. If staging failed, run the Release workflow by hand once the cause is fixed.
+2. **On each push to `main`**, the Release workflow opens or updates a `chore: release` pull request. It bumps the pack's version and each named skill's, and writes `CHANGELOG.md`. It stays open while changes pile up.
+3. **A maintainer merges it when the batch is ready** — never once per pull request — after reading its head, pinned to that head (`gh pr merge <n> --match-head-commit <sha>`): a push to `main` rebuilds it, and an unpinned merge can carry a different batch. `/<prefix>-release` does this for any project.
+4. **Merging stages the release.** The workflow stages the new version on npm through [trusted publishing](https://docs.npmjs.com/trusted-publishers) — no npm token is stored anywhere — tags `v<version>`, and publishes a GitHub release from the changelog.
+5. **A maintainer approves it with 2FA**, and only then can anyone install it. Approve staged versions oldest first: approving an older one after a newer one moves `latest` back. Approve on npmjs.com under the package's staged versions, or `npm stage list @epicparty/skills`, then `npm stage approve <stage-id>`. The run's summary says so. If staging failed, run the Release workflow by hand once the cause is fixed.
 
 npm must trust the workflow to stage, and only to stage: on npmjs.com, `@epicparty/skills` → **Settings** → **Trusted publishing** names GitHub Actions, `epicparty/skills`, `release.yml`, no environment, with **Allow npm publish** unticked. A run that could publish directly would skip the 2FA approval.
 

@@ -48,6 +48,8 @@ Done when the suite has run and you can name its result and the SHA it judged, o
 
 Read the **Scopes** setting when it is set, and the **Merge strategy** setting now, per [Settings](#settings): it decides who reads the body.
 
+**A changeset**, under **Releases** at **Changesets**: when the branch changes what the project ships, add one (`npx changeset`) before opening, its bump by the **Bump rules** (`/ep` `## Settings`) and its entry in the project's format, and commit it on the branch. A change to tests, CI or tooling alone ships nothing and adds none.
+
 **Title** — the conventional-commit subject that summarises the whole branch, per `GIT.md` `## Naming an issue, a PR and a branch`: `type(<scope>): description`, the scope matching the issue's, the type the branch's dominant change. Individual commits keep their own narrower scopes.
 
 **Body** — check for a template first (`.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE/`) and fill its headings when one exists. Otherwise write prose covering:
@@ -82,8 +84,9 @@ Done when the PR is open, non-draft, based correctly, linked to its issue, and t
 
 ## Settings
 
-This skill reads four settings, all defined in `/ep` `## Settings` together with the steps that find them:
+This skill reads five settings, all defined in `/ep` `## Settings` together with the steps that find them:
 
 - **Full suite** at § 3 and **Merge strategy** at § 4. This skill runs the one and writes the body the other shapes, so it asks for each one that is missing.
 - **Tracker** at § 2: read when set, and asked for only when there is an issue to link.
 - **Scopes** at § 4, when it is set.
+- **Releases** at § 4, when it is set: a project that versions nothing never hears of it.

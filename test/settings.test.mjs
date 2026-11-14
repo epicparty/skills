@@ -50,7 +50,11 @@ describe('settings sections', () => {
     for (const setting of settings(body)) {
       it(`${skill} "${setting.heading}" declares a topic, a question and a recommendation for setup`, () => {
         assert.match(setting.body, /^Topic `[a-z-]+`\. Question: \*[^*]+\*$/m);
-        const table = setting.body.split('\n').filter((line) => line.startsWith('|'));
+        // The options table is the first one under the heading; reference tables may follow it.
+        const lines = setting.body.split('\n');
+        const start = lines.findIndex((line) => line.startsWith('|'));
+        const end = lines.findIndex((line, i) => i > start && !line.startsWith('|'));
+        const table = lines.slice(start, end < 0 ? undefined : end);
         assert.equal(table[0], '| Option | Follow-up | Recommend when |');
         const rows = table.slice(2).map((line) => line.split(' | ').map((cell) => cell.replace(/^\| |\s*\|$/g, '').trim()));
         assert.ok(rows.length > 0, 'no options');
