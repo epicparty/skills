@@ -22,13 +22,15 @@ Both axes run as **parallel sub-agents**, so neither pollutes the other's contex
 Take the first that fits:
 
 - **Files the user named** — read whole; there is no diff and no commit list.
-- **A commit, tag, or range the user named** — `git diff <ref>...HEAD`.
-- **Uncommitted changes**, when the user asked for working changes or the branch has no commits of its own — `git diff HEAD`.
-- **The branch** — the default: the merge-base with the default branch, `git merge-base HEAD origin/<default>`, the default from `git symbolic-ref refs/remotes/origin/HEAD`, or `gh repo view --json defaultBranchRef` where that is unset. This is what a branch review means and what `/ep-implement` and `/ep-babysit` ask for.
+- **One commit the user named** — that commit's own change: `git show <sha>`, and its commit list is that commit alone.
+- **A range the user named**, `<a>..<b>` — `git diff <a>...<b>`, and its commits `git log <a>..<b> --oneline`.
+- **Everything since a ref the user named**, such as a tag — `git diff <ref>...HEAD`, and its commits `git log <ref>..HEAD --oneline`.
+- **Uncommitted changes**, when the user asked for working changes or the branch has no commits of its own — `git diff HEAD` for the tracked files, plus every untracked one, `git ls-files --others --exclude-standard`, read whole as new. Work that is only new files has an empty `git diff HEAD`.
+- **The branch** — the default: the merge-base with the default branch, `git merge-base HEAD origin/<default>`, the default from `git symbolic-ref refs/remotes/origin/HEAD`, or `gh repo view --json defaultBranchRef` where that is unset — `git diff <merge-base>...HEAD`, and its commits `git log <merge-base>..HEAD --oneline`. This is what a branch review means and what `/ep-implement` and `/ep-babysit` ask for.
 
-Capture a diff once — three-dot, so the comparison is against the merge-base and not against whatever else has landed since — and note its commits with `git log <fixed-point>..HEAD --oneline`. Confirm the ref resolves (`git rev-parse`) and the diff is non-empty before going further. A bad ref should fail here, not inside two sub-agents.
+Capture the diff once. Where it compares against another line of work, it is three-dot, so the comparison is against the merge-base and not against whatever else has landed since. Confirm every ref resolves (`git rev-parse`) and the code is non-empty — a diff, or untracked files — before going further. A bad ref should fail here, not inside two sub-agents.
 
-Done when you have the code to review — a non-empty diff with its commits, or the named files.
+Done when you have the code to review — a non-empty diff with its commits, the untracked files with it, or the named files.
 
 ## 2. Take the spec
 

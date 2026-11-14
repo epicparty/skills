@@ -18,7 +18,7 @@ A question you still need answered means the story is not ready to be written. A
 
 Work from the conversation. Where `/ep-explore` produced a brief, that brief is the material: the provenance, the seams, the prior art, the decisions the user has since made.
 
-Without one, run `/ep-explore` now — the story names interfaces, test levels and prior art, and each of those is a fact about the codebase rather than a matter of taste. Its § 2 searches the tracker first: an issue that already describes the work is refined, never filed twice.
+Without one, run `/ep-explore` now — the story names interfaces, test levels and prior art, and each of those is a fact about the codebase rather than a matter of taste. Its § 2 reads the issue the user named, with its comments, or else searches the tracker for one: an issue that already describes the work is refined, never filed twice.
 
 Check the request's premise too: the product, the area and the terms it names, against the glossary. A request that names the wrong one is corrected before anything is written (`/ep` `## Working rules`).
 
@@ -65,7 +65,7 @@ With **Tracker** at **None**, create nothing: print the story in the chat — it
 
 On GitHub, `gh issue create`, with a heredoc for the body. On another tracker, the way the **Tracker** setting describes.
 
-**Refining an issue that already exists** — the one § 1 found, or a discovery body whose questions were just answered — rewrites its body in place instead (`gh issue edit <n> --body-file -`) and keeps its labels, unless the story's work is already on the default branch: that is frozen, and the change is a new issue ([`STORIES.md`](./STORIES.md) `## Frozen once live`).
+**Refining an issue that already exists** — the one the user named or § 1 found, or a discovery body whose questions were just answered — rewrites its body in place instead (`gh issue edit <n> --body-file -`) and keeps its labels, unless the story's work is already on the default branch: that is frozen, and the change is a new issue ([`STORIES.md`](./STORIES.md) `## Frozen once live`).
 
 Report the issue and its URL, then hand to [`/ep-triage`](../triage/SKILL.md): it owns the axes and the ready label, and a story written to the bar passes it in one quick pass. `/ep-implement` follows its **Ready** verdict.
 
