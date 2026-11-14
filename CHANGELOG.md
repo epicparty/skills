@@ -1,5 +1,17 @@
 # @epicparty/skills
 
+## 0.5.0
+
+### Minor Changes
+
+- [#19](https://github.com/epicparty/skills/pull/19) [`28d665f`](https://github.com/epicparty/skills/commit/28d665f28b5fe48f010a5594988902409ec9ee8f) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `release`, `router`, `to-pr`, `ship`: releases are opt-in and cut when a batch is ready. A new **Releases** setting, **None** by default, describes how a project versions: Changesets, a commit-driven tool, or tags by hand. Its **Bump rules** define patch as a fix, minor as something new, and major as a change a project must act on; before 1.0.0 that is a minor whose entry starts with **Action:**. The new `/release` skill, which you type yourself, checks each pending change's bump, cuts the release on the head it checked, and follows it to its receipt, with staged versions approved oldest first. `to-pr` adds a changeset under **Changesets**, and `ship` says a merge waits for the next release. The pack's own `.changeset/README.md` and README `## Releasing` follow the same rules.
+
+- [#16](https://github.com/epicparty/skills/pull/16) [`8069a4e`](https://github.com/epicparty/skills/commit/8069a4e8d3086fe8c9f4a173d64049c505a9046e) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `implement`, `to-story`, `to-pr`, `code-review`, `diagnose`, `writing-for-agents`: verify work on the user's surface and by measurement. `implement` gains § 7 **Prove it**: each numbered story is exercised where its user meets it, with evidence, and anything else is inconclusive, never a pass. A story's **Measure** line, new in `to-story`'s testing decisions, is proven by `VERIFY.md`'s hill climb: a frozen harness, alternating baseline runs and a noise floor, one change per round, a confirmed stop, and an explained number. Red tests are frozen, and a test's P score decides whether it is written. `to-pr` carries the proof into the PR body. `code-review`'s Spec axis flags code shaped around tests and names the change's blast radius. `diagnose` tests a failed fix's premise and names the signal that would have caught the bug. `writing-for-agents` encodes a repeated mistake on the highest rung that holds. Ideas adapted from Lauren Tan's pstack (MIT), credited in `UPSTREAM.md` and `NOTICE`.
+
+### Patch Changes
+
+- [#14](https://github.com/epicparty/skills/pull/14) [`1a88848`](https://github.com/epicparty/skills/commit/1a8884872de24dd6cba320d1bb1625088e32901f) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `implement`: `TDD.md` widens the tautological-test anti-pattern to any test that adds no verification: a constant string checked for substrings of itself, a function asserted to return its hardcoded value, a snapshot of internals, anything that passes when the behaviour is wrong. A pure constant or a logic-free mapping is used, not tested. Every test first answers "if I introduced a real bug in the logic, would this fail?", and a good test prefers the larger unit, covers edge cases and error paths, and fails when user-facing behaviour breaks.
+
 ## 0.4.0
 
 ### Minor Changes

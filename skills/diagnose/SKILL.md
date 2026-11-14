@@ -3,7 +3,7 @@ name: diagnose
 description: Diagnoses a failure in this codebase — a bug, an error, a failing or flaky test, a slowdown — with a loop that goes red on it before any theory, then fixes it under a regression test. Use when something is broken, failing or slow, or the user asks to debug or investigate why.
 metadata:
   pack: epicparty/skills
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # Diagnose

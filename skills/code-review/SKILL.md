@@ -3,7 +3,7 @@ name: code-review
 description: Reviews code on two axes, Standards and — when given a spec — Spec. Use before opening a PR, or when asked to review a branch, a commit range, working changes or a few files.
 metadata:
   pack: epicparty/skills
-  version: 0.1.1
+  version: 0.2.0
 ---
 
 # Code Review

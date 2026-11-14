@@ -3,7 +3,7 @@ name: ship
 description: Takes a PR to merged, confirms the production deploy landed, and returns the checkout to a clean slate. Use when asked to ship or deploy.
 metadata:
   pack: epicparty/skills
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # Ship
