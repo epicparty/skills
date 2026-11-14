@@ -70,7 +70,7 @@ Test the externally observable behaviour, never the implementation. Reuse the fi
 
 Typecheck the package you are in with its own script, and run the single test file as you go, with the level's run command from **Test levels**; the full check comes next. A tight loop is what makes the slices cheap.
 
-Done when every row of the map has a test that has been run, and every numbered user story reads true against the running code.
+Done when every row of the map has a test that has been seen red, then green.
 
 ## 6. Validate
 
@@ -80,7 +80,20 @@ A change to code that other parts depend on validates those parts too, not only 
 
 Done when the check passes, or its failure is understood and fixed rather than worked around.
 
-## 7. Review the diff
+## 7. Prove it
+
+<!-- upstream: backnotprop/pstack skills/create-verification-skill/SKILL.md -->
+
+Tests prove the code at its seams; the **proof** shows each story working where its user meets it. For each numbered user story, exercise the change through that surface — the app in a browser, the CLI, the endpoint, the job — started the way the project's agent files or **Test levels** say, and keep the **evidence**: the command and its output, the request and its response, or a screenshot.
+
+- **The user's surface, or inconclusive.** A unit test, a compiling type or a call into the module shows the code, not the story: evidence from any other surface is reported as **inconclusive**, never as a pass.
+- **A check you have seen fail.** A check written for this step — a script, a request with an expected response — runs once against `origin/<default>`, or with the change reverted, and comes out wrong before you trust it. One never seen failing proves nothing.
+- **A measured target** — a **Measure** line in the story's `## Testing Decisions`, or an outcome that is a number — is proven by measuring it, per [`VERIFY.md`](./VERIFY.md). Read it before the first measurement.
+- **A manual row** from § 4 — a real device, a third-party dashboard — keeps its manual check, reported as still to do.
+
+Done when every numbered user story has evidence from its user's surface, or is reported as inconclusive or manual with the reason, and every measured target is met or reported with its numbers.
+
+## 8. Review the diff
 
 Run [`/ep-code-review`](../code-review/SKILL.md) against the merge-base, and pass it the story as its spec — the issue with its comments, or what the conversation settled when there is none. It reviews on two axes: **Standards**, whether the code follows the project's documented rules, and **Spec**, whether it does what the story asked.
 
@@ -88,7 +101,7 @@ Fix the Standards findings. A Spec finding naming a missing requirement means th
 
 Done when the diff has been reviewed and every finding is fixed or dispositioned with a stated reason.
 
-## 8. Commit
+## 9. Commit
 
 Commit per [`GIT.md`](../router/GIT.md) `## Commits`: Conventional Commit subjects, each commit standing alone, written for the reader who finds it on the default branch.
 
@@ -96,12 +109,12 @@ Done when your work is committed and `git status` shows nothing of yours left be
 
 ## Hand off
 
-Report the branch, the issue, what you built, the validation result, every **small fix** you committed, every larger finding, and every **open question** you are leaving — the calls you made *for* the user. Then [`/ep-to-pr`](../to-pr/SKILL.md) opens the pull request, carrying the findings and the questions into its body, and [`/ep-ship`](../ship/SKILL.md) carries it to merged and into production.
+Report the branch, the issue, what you built, the validation result, the proof — each story's evidence, and each inconclusive or manual one —, every **small fix** you committed, every larger finding, and every **open question** you are leaving — the calls you made *for* the user. Then [`/ep-to-pr`](../to-pr/SKILL.md) opens the pull request, carrying the proof, the findings and the questions into its body, and [`/ep-ship`](../ship/SKILL.md) carries it to merged and into production.
 
 ## Guardrails
 
 - **The story's goal is this branch's scope, and a small fix rides along.** What the goal needs is built here and written into the story (step 4). A **small fix** the work turns up lands here as its own commit, and anything larger goes under **Found in passing** in the PR body. A **sibling** of the defect you are fixing is an **open question**: ask before it ships (`/ep` `## Vocabulary`).
-- **Validation is evidence.** Make the code satisfy the gate, and leave the gate's config alone.
+- **Validation is evidence.** Make the code satisfy the gate, and leave the gate's config alone. The same holds for the tests once red ([`TDD.md`](./TDD.md) `## Rules of the loop`) and for a measured target's harness (`VERIFY.md`).
 - **A test you had to reach into the implementation to write is telling you the seam is wrong.** Raise it rather than reaching further.
 
 ## Settings

@@ -80,6 +80,7 @@ Keep file paths and code snippets out — they go stale fastest. Exception: wher
 - The externally observable behaviour to test
 - The level each behaviour is tested at, from the **Test levels** setting where it is set, and in which module
 - The prior art to copy from: the tests in this area that already work
+- A **Measure**, where the outcome is a number — a response time, a size, a score: the target, the command that measures it, and its inputs. `/ep-implement` proves it by measuring ([`VERIFY.md`](../implement/VERIFY.md))
 
 ## Out of Scope
 

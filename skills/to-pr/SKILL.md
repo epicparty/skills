@@ -57,6 +57,7 @@ Read the **Scopes** setting when it is set, and the **Merge strategy** setting n
 - **What to look at** — the decision you are least sure of, the trade-off you made, the file that carries the risk. This is the section that gets you a useful review instead of an approval. Label as **Open question** each call you made *for* the user and would change on their word (`/ep` `## Vocabulary`); `/ep-babysit` holds the merge until each has an answer, so one left unlabelled ships as decided.
 - **Found in passing** — each **small fix** the branch carries, named by commit, and each larger finding left for the user to make a story of (`/ep` `## Vocabulary`). Leave the heading out when there is neither.
 - **The suite report** — the command you ran, the SHA, and the result. Say plainly when it could not run. Leave it out when CI runs the suite.
+- **The proof** — from `/ep-implement`'s hand-off: each numbered user story with its evidence from the running product, each one inconclusive or still to check by hand, and a measured target's table. Leave it out when the branch has no story, such as a refactor proven by its tests.
 - **The issue link** from step 2.
 
 Use the domain's own vocabulary ([`DECISIONS.md`](../router/DECISIONS.md)), name other issues with the **Tracker** setting's prefix, and follow the naming rules the project's agent files set for prose. Under a **Squash** merge, write the body as the commit body it becomes: lead with what `git log` needs, and keep the reviewer's notes — what to look at, the open questions — under their own headings below it.

@@ -27,10 +27,11 @@ When the shape of the interface is itself in question — how deep the module is
 
 ## Rules of the loop
 
-- **Would it catch a real bug?** Before writing a test, ask: if I introduced a real bug in the logic, would this test fail? If not, don't write it.
+- **Would it catch a real bug?** Before writing a test, ask: if I introduced a real bug in the logic, would this test fail? That is its **P** in [`TEST-VALUE.md`](./TEST-VALUE.md): a test that cannot fail on a plausible defect is not written. Where a defect costs what a person sees, stored data, a permission or money, make the answer observable: break the logic by hand, watch the test go red, and revert.
+- **Red tests are frozen.** Once a story's test has gone red, the build changes the code, not the test. The code is correct for every valid input the story covers, never shaped around the test's own inputs. A test that turns out wrong is fixed as a test, and the change and its reason go in the hand-off; a test whose expectation you doubt is an **open question** for the user.
 - **Red before green.** Write the failing test first, then only enough code to pass it. Do not anticipate future tests or add speculative features.
 - **One slice at a time.** One seam, one test, one minimal implementation per cycle.
-- **Refactoring is not part of the loop.** It belongs to the review, [`/ep-implement` § 7](./SKILL.md#7-review-the-diff), not the red → green cycle.
+- **Refactoring is not part of the loop.** It belongs to the review, [`/ep-implement` § 8](./SKILL.md#8-review-the-diff), not the red → green cycle.
 
 ## Good and bad tests
 
