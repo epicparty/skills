@@ -33,13 +33,8 @@ jobs:
           registry-url: https://registry.npmjs.org
           cache: npm
       - run: npm ci
-      - uses: changesets/action@v2
-        with:
-          version-script: npm run version
-          commit-message: "chore: release"
-          pr-title: "chore: release"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Release first, from the pushed commit as checked out. The changesets step below leaves
+      # the checkout on the release pull request's branch, with its bumped package.json.
       - name: Find a version to release
         id: release
         run: |
@@ -67,3 +62,10 @@ jobs:
           cat >> "$GITHUB_STEP_SUMMARY" <<SUMMARY
           **@epicparty/skills@$VERSION is staged on npm.** Approve it with 2FA to make it public: on npmjs.com under the package's staged versions, or \`npm stage list @epicparty/skills\` and \`npm stage approve <stage-id>\`.
           SUMMARY
+      - uses: changesets/action@v2
+        with:
+          version-script: npm run version
+          commit-message: "chore: release"
+          pr-title: "chore: release"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
