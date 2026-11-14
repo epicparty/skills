@@ -1,0 +1,13 @@
+{
+  "skill": "implement",
+  "split": "train",
+  "settings": true,
+  "prompt": "/ev-implement\n\nThis work has no issue. Build this story, and do not ask me anything: where you would ask, decide, and say what you decided in your hand-off.\n\n## Problem Statement\n\n`slugify` (`src/slugify.mjs`) returns slugs of any length, and some of our URLs come out over 100 characters.\n\n## Solution\n\n`slugify` takes an optional `maxLength`, and the slug never exceeds it.\n\n## User Stories\n\n1. As a Developer, I pass `{ maxLength }` as a second argument to `slugify`, so that the slug is never longer than it\n2. As a Developer, I get the slug cut at the last word boundary that fits, so that no word is cut in half\n3. As a Developer, I get a slug that never ends in a hyphen after a cut, so that URLs stay clean\n4. As a Developer, I get the first word cut at `maxLength` when that word alone is longer, so that the slug is never empty\n5. As a Developer, I get the whole slug when `maxLength` is absent or the slug already fits, so that existing callers see no change\n\n## Testing Decisions\n\nUnit tests with `node:test`, beside the existing ones in `test/slugify.test.mjs`.",
+  "graders": [
+    { "name": "on-a-branch" },
+    { "name": "suite-green" },
+    { "name": "new-tests-red-on-base", "paths": ["src"] },
+    { "name": "existing-tests-kept", "files": ["test/slugify.test.mjs"] },
+    { "name": "hidden-tests-pass", "into": "test" }
+  ]
+}
