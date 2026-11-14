@@ -4,7 +4,7 @@ description: Proposes a value for every setting the installed ep-* skills declar
 disable-model-invocation: true
 metadata:
   pack: epicparty/skills
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # Setup
