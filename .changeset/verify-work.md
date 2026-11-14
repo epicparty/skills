@@ -1,5 +1,0 @@
----
-"@epicparty/skills": minor
----
-
-`implement`, `to-story`, `to-pr`, `code-review`, `diagnose`, `writing-for-agents`: verify work on the user's surface and by measurement. `implement` gains § 7 **Prove it**: each numbered story is exercised where its user meets it, with evidence, and anything else is inconclusive, never a pass. A story's **Measure** line, new in `to-story`'s testing decisions, is proven by `VERIFY.md`'s hill climb: a frozen harness, alternating baseline runs and a noise floor, one change per round, a confirmed stop, and an explained number. Red tests are frozen, and a test's P score decides whether it is written. `to-pr` carries the proof into the PR body. `code-review`'s Spec axis flags code shaped around tests and names the change's blast radius. `diagnose` tests a failed fix's premise and names the signal that would have caught the bug. `writing-for-agents` encodes a repeated mistake on the highest rung that holds. Ideas adapted from Lauren Tan's pstack (MIT), credited in `UPSTREAM.md` and `NOTICE`.

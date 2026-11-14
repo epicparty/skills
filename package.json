@@ -1,6 +1,6 @@
 {
   "name": "@epicparty/skills",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A delivery workflow for coding agents \u2014 explore, story, implement, PR, ship \u2014 installed under your project's own prefix.",
   "license": "MIT",
   "type": "module",
