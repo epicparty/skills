@@ -16,9 +16,9 @@ The story is the spec. Where it and your judgement disagree, the story wins unti
 
 Fetch the issue **and its comments** — the comments often carry decisions the body never got. The tracker is the **Tracker** setting when the settings home has one, or GitHub when `gh repo view` finds the repo. Where the work arrived with no issue, say so and build from what the conversation settled.
 
-Check this checkout before anything runs, the way `/ep-deliver`'s worker § 1 does — clean, at `origin/<default>` — on the default branch, or a fresh branch with no commits past it — and set up for its kind per the **Checkout** setting where it is set. A checkout that fails is somebody's work: stop, name what fails, and change nothing. A worker `/ep-deliver` started has done this already.
+Check this checkout before anything runs, the way `/ep-deliver`'s worker § 1 does — clean, at `origin/<default>` — on the default branch, or a fresh branch with no commits past it, or the story's own pushed branch when resuming a parked story — and set up for its kind per the **Checkout** setting where it is set. A checkout that fails is somebody's work: stop, name what fails, and change nothing. A worker `/ep-deliver` started has done this already.
 
-Then claim it: assign yourself — on GitHub, `gh issue edit <n> --add-assignee @me` — and, where the project keeps a board, move the item to the Building stage (`/ep`'s [`BOARD.md`](../router/BOARD.md)). Write the status **before** cutting the branch, and re-read the item afterwards — the write is what claims the story against other workers, and an issue still reading as ready to start invites one of them to claim it too. A worker that does not see itself as the writer lost the race and stops here. Run directly, the user's request is the go-ahead: claim the story from whatever stage it is in. Hold it to the Ready bar ([`STORIES.md`](../to-story/STORIES.md) `## Ready`) all the same — a gap is an **open question** you raise before building, not a reason to stop.
+Then, with an issue, claim it the way `/ep-deliver`'s [worker § 2](../deliver/SKILL.md#2-claim-it) does — a claim comment read back, then the assignee and the Building stage — **before** cutting the branch: the claim comment is what holds the story against other workers. A worker that loses the race stops here, and one `/ep-deliver` started has claimed already. Without an issue there is nothing to claim. Run directly, the user's request is the go-ahead: claim the story from whatever stage it is in. Hold it to the Ready bar ([`STORIES.md`](../to-story/STORIES.md) `## Ready`) all the same — a gap is an **open question** you raise before building, not a reason to stop.
 
 Done when you can state the outcome, the seams, and the test level the story named.
 
@@ -26,9 +26,11 @@ Done when you can state the outcome, the seams, and the test level the story nam
 
 Name it per `/ep`'s [`GIT.md`](../router/GIT.md) `## Naming an issue, a PR and a branch`. The type follows the issue's type label where the **Labels** setting defines a type axis and the label names a Conventional Commit type — `fix`, `refactor`, `chore` — and the change otherwise: a label such as `feature` or `improvement` is `feat` when the change adds behaviour, `fix` when it repairs it. Where the change contradicts the label — a defect fix labelled a chore — the change decides, and the hand-off names the mismatch. The scope follows the issue's title — from the **Scopes** vocabulary where the project has one.
 
-Branch off the default branch unless the user asked to stack this on another, and link the branch to the issue: on GitHub, create it with `gh issue develop <n> --name <branch> --base <default> --checkout`; on another tracker, comment its name on the issue. The link is how `/ep-deliver` finds a branch before its PR exists.
+Branch off the default branch unless the user asked to stack this on another. With an issue, link the branch to it: on GitHub, create it with `gh issue develop <n> --name <branch> --base <default> --checkout`; on another tracker, comment its name on the issue. The link is how `/ep-deliver` finds a branch before its PR exists. Without an issue, create it with `git switch -c <branch> origin/<default>`.
 
-Done when you are on a fresh branch named to the standard, cut from an up-to-date base.
+**Resuming a parked story**, the branch exists: stay on it, read its commits, and continue at the step its park comment records (`/ep-deliver` [Park, do not wait](../deliver/SKILL.md#park-do-not-wait)) — or, with no record, at the first step whose Done-when the branch does not meet yet.
+
+Done when you are on a fresh branch named to the standard, cut from an up-to-date base — or back on a resumed story's branch.
 
 ## 3. Route the standards
 
