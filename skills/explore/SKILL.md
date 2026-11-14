@@ -3,7 +3,7 @@ name: explore
 description: Maps what a piece of work involves before anything is decided — provenance, seams, prior art, open questions. Use at the start of unfamiliar work.
 metadata:
   pack: epicparty/skills
-  version: 0.1.0
+  version: 0.1.1
 ---
 
 # Explore
