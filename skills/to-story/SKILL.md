@@ -3,7 +3,7 @@ name: to-story
 description: Writes the conversation up as one user story on the project's tracker. Use when work should become a tracked issue.
 metadata:
   pack: epicparty/skills
-  version: 0.1.0
+  version: 0.1.1
 ---
 
 # To Story
