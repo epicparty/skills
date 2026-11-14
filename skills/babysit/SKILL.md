@@ -93,19 +93,25 @@ Done when every fixed finding has a reply and a resolved thread, and every other
 
 **External.** An **external review** comes from a reviewer outside this session — a review bot installed on the repository. The **External reviewers** setting lists each one by kind; read it on the first sweep, per [Settings](#settings).
 
-**An automatic reviewer reviews every PR on its own.** Its review is the PR's external review, whether the change is substantial or not. Never ask the user about it, and never request it — except when its run is missing on the head commit: no check or status of the name its row gives on that SHA once the PR's other checks there have finished. Then post its re-request comment, once per head SHA. Its findings, in review threads or PR comments, go through steps 4 and 5 like any bot's.
+**An automatic reviewer reviews every PR on its own.** Its review is the PR's external review, whether the change is substantial or not, and every head commit needs a review of its own: the substantial-push rule below is for the normal and security kinds only. Never ask the user about it, and request it only when the head commit has **no review** from it:
+
+- **No review** is what its row defines; by default, its check or status missing on the head SHA once the PR's other checks there have finished, or ended skipped, rate limited or neutral. A skip the row counts as a review — every file filtered out by the bot's config, "No files to review" — is its review.
+- **Then post its re-request comment.** After a rate limit, post it only once the limit has lifted — the bot's message says when; a sweep before then reports the wait and posts nothing.
+- **Each request counts against the row's cap** of requests per PR. With the cap spent and still no review on the head SHA, request no more: the gate holds the PR open, and the report says so.
+
+Its findings, in review threads or PR comments, go through steps 4 and 5 like any bot's.
 
 **A normal or security reviewer reviews only when asked, rarely, for a substantial change.** Its quota is small: the setting gives how to request each and the most reviews each one gives a PR. Our review carries most PRs; a requested one is the exception:
 
 - **Substantial** means the diff changes architecture or core logic: a module boundary, a schema or migration, auth and permissions, a shared package other code depends on, the rules of a domain flow. Copy, styling, docs and test-only changes are not substantial.
 - **Requested without asking** when the user asked for an external review, or for a deep or deeper review.
 - **Otherwise asked once.** For a substantial change, ask the user once per PR whether they want an external review, and from which reviewer when more than one is enabled. Record the answer in the PR body, so a later sweep reads it rather than asking again. A change that is not substantial gets no ask. Under [`/ep-deliver`](../deliver/SKILL.md) nobody is there to answer, so a substantial change gets its external review without asking, within the caps.
-- **One big review of each kind.** Request it once our review's findings are fixed and pushed, so it reads the shape that will merge. A later push earns another only when that push is substantial on its own — a rebase whose conflicts touched architecture or core logic, for example — and only within that kind's cap.
+- **One big review of each requested kind.** Request it once our review's findings are fixed and pushed, so it reads the shape that will merge. A later push earns another only when that push is substantial on its own — a rebase whose conflicts touched architecture or core logic, for example — and only within that kind's cap.
 - **A security review** is for a change to auth, permissions or secrets themselves, not to code beside them. Spend its cap by how sensitive the code is: a later push earns another only when it touches that code again.
 
 A later sweep reads its findings at step 3 and dispositions them at step 5 like any other bot.
 
-Done when the current diff has had our review, every automatic reviewer's run on the head commit has started or been re-requested, the requested kinds are settled — requested, not wanted, or not earned — and every finding raised carries a disposition.
+Done when the current diff has had our review, every automatic reviewer has reviewed the head commit or has a re-request out, a rate limit to wait for, or its cap spent, the requested kinds are settled — requested, not wanted, or not earned — and every finding raised carries a disposition.
 
 ## 9. The merge gate
 
@@ -116,7 +122,7 @@ Take a fresh read **after** your last push — a gate judged on state from befor
 - no check still running
 - no unresolved thread, and no reviewer sitting on changes-requested
 - every **open question** in the PR body has an answer — a call you made *for* the user is theirs to take while the diff is open, and this merge is what closes that window
-- every **automatic** reviewer's run has finished **on that head SHA**, and every finding it raised carries a disposition. A run missing even after its re-request holds the gate: report it, and the user decides whether to merge without it
+- every **automatic** reviewer has reviewed **that head SHA** — its run finished there, and not as **no review** (step 8) — and every finding it raised carries a disposition. No review there with its cap spent holds the gate: report it, and the user decides whether to merge without it
 - the requested kinds are settled (step 8), and every external review requested has landed; merging while one is still running throws away quota you spent
 - code-review findings fixed or dispositioned
 - where the **Full suite** runs locally, the PR body's suite report names **this** head SHA — that report is the only evidence the merging commit was ever tested
@@ -163,7 +169,7 @@ Topic `reviewers`. Question: *Which review bots outside this session review this
 
 | Option | Follow-up | Recommend when |
 | --- | --- | --- |
-| **These reviewers** | One row per reviewer and kind. **Automatic** — it reviews every PR on its own: the check or status name its run shows on the head commit, such as `CodeRabbit`, and the comment that re-requests it when that run is missing, such as `@coderabbitai review`. **Normal** or **security** — it reviews only when asked: the PR comment that requests it, the most requests per PR, and any rule its trigger needs | A review bot is installed — `gh api orgs/<owner>/installations` where the owner is an organisation — or has reviewed, commented or reported a check on the repository's recent PRs (`gh pr list --state merged --limit 20 --json number,comments,reviews`, then `gh pr checks <n>` on a few). A bot whose review or check appears on PRs where nobody asked for it is **automatic**: CodeRabbit, Copilot code review. One that only answers a request is **normal** |
+| **These reviewers** | One row per reviewer and kind. **Automatic** — it reviews every PR on its own: the check or status name its run shows on the head commit, such as `CodeRabbit`; the comment that re-requests it, such as `@coderabbitai review`; the most requests per PR; and what counts as **no review** from it — by default its run missing, or ended skipped, rate limited or neutral — with any skip that counts as a review, such as every file filtered out by its config ("No files to review"). **Normal** or **security** — it reviews only when asked: the PR comment that requests it, the most requests per PR, and any rule its trigger needs | A review bot is installed — `gh api orgs/<owner>/installations` where the owner is an organisation — or has reviewed, commented or reported a check on the repository's recent PRs (`gh pr list --state merged --limit 20 --json number,comments,reviews`, then `gh pr checks <n>` on a few). A bot whose review or check appears on PRs where nobody asked for it is **automatic**: CodeRabbit, Copilot code review. One that only answers a request is **normal** |
 | **None** | — | No review bot is installed: step 8 runs our review alone |
 
 A reviewer the setting does not list is never requested, and an automatic one it does not list is a bot like any other: its findings still go through step 5, but the gate does not wait for it. Enabling one means installing it on the repository first, then adding its row.
