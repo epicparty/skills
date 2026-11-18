@@ -4,7 +4,7 @@ description: Ask what to do with a request, and get walked through it. The route
 disable-model-invocation: true
 metadata:
   pack: epicparty/skills
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # EP
