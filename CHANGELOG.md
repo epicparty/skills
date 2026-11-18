@@ -1,5 +1,11 @@
 # @epicparty/skills
 
+## 0.6.0
+
+### Minor Changes
+
+- [#22](https://github.com/epicparty/skills/pull/22) [`e9c2620`](https://github.com/epicparty/skills/commit/e9c2620ed70185112d5ee4b6d1091fbc40ddd7eb) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `router`, `diagnose`: weigh every proposal before putting it to the user. A story, fix, guard or follow-up now comes with what it buys, what it costs, what it can break and a verdict, and an agent's own earlier plan or a hand-off's leftover work is weighed again before it acts. `diagnose`'s cheap-signal finding stays a line in the report when it costs more than the failure it catches.
+
 ## 0.5.0
 
 ### Minor Changes
