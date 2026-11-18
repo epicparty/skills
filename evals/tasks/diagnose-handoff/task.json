@@ -1,0 +1,21 @@
+{
+  "skill": "diagnose",
+  "split": "train",
+  "settings": true,
+  "prompt": "/ev-diagnose\n\nCarry on from the last session's hand-off below. I'm away for this run: proceed on your own ranking of the hypotheses, don't ask me anything, and where you would ask, decide and say what you decided.\n\n## Hand-off\n\n`totalOf` in `src/total.mjs` returns `NaN` on this month's bank export, which ends with a blank line. Not yet reproduced or fixed.\n\nFollow-ups to do after the fix:\n\n1. p1 story: replace the hand-written parser with a full CSV library, so that no export can break it again.\n2. Story: a nightly CI job that downloads the latest export from the bank and checks that its total is a number.",
+  "graders": [
+    { "name": "on-a-branch" },
+    { "name": "suite-green" },
+    { "name": "hidden-tests-pass", "into": "test" },
+    {
+      "name": "changes-within",
+      "label": "builds and files no follow-up",
+      "paths": ["src", "test"]
+    },
+    {
+      "name": "output-matches",
+      "label": "gives the follow-ups a verdict",
+      "pattern": "not worth|isn'?t worth|worth it|worth (doing|building|the cost)"
+    }
+  ]
+}

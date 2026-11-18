@@ -140,6 +140,21 @@ export const graders = {
     return new RegExp(pattern, 'i').test(ctx.output) ? ok() : no(`no match for /${pattern}/i`);
   },
 
+  /**
+   * Every file the agent added, changed or deleted since the base — committed or not — lies under
+   * `paths`: no story file, CI job or new dependency rode along with the fix.
+   */
+  'changes-within'(ctx, { paths }) {
+    const committed = git(ctx.dir, 'diff', '--name-only', ctx.base, 'HEAD');
+    const pending = git(ctx.dir, 'status', '--porcelain', '--untracked-files=all')
+      .split('\n')
+      .filter(Boolean)
+      .map((line) => line.slice(3).split(' -> ').at(-1));
+    const outside = [...new Set([...(committed ? committed.split('\n') : []), ...pending])]
+      .filter((file) => !paths.some((path) => file === path || file.startsWith(`${path}/`)));
+    return outside.length ? no(outside.join(', ')) : ok();
+  },
+
   /** A read-only task left the commits and the working tree as it found them. */
   'tree-unchanged'(ctx) {
     const head = git(ctx.dir, 'rev-parse', 'HEAD');
