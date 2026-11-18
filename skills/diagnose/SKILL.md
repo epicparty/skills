@@ -111,7 +111,7 @@ Done when the test is green, the original loop is green, and the check passes.
 
 Commit per `/ep`'s [`GIT.md`](../router/GIT.md) `## Commits`, and state the hypothesis that proved correct in the commit body, so the next debugger learns from it. Then [`/ep-to-pr`](../to-pr/SKILL.md) opens the pull request.
 
-Report the symptom, the loop, the hypothesis that held and the ones ruled out, the fix, and every finding and **open question** you are leaving. Name, as a finding, the cheap signal that would have shown this bug sooner — an assertion, a log line, a metric, a lint rule.
+Report the symptom, the loop, the hypothesis that held and the ones ruled out, the fix, and every finding and **open question** you are leaving. Name, as a finding, the cheap signal that would have shown this bug sooner — an assertion, a log line, a metric, a lint rule — weighed as `/ep` `## Working rules` says: a signal that costs more than the failure it catches stays a line in this report.
 
 ## Settings
 
