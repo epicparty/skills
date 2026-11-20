@@ -1,5 +1,11 @@
 # @epicparty/skills
 
+## 0.8.0
+
+### Minor Changes
+
+- [#26](https://github.com/epicparty/skills/pull/26) [`fa28e9d`](https://github.com/epicparty/skills/commit/fa28e9d3c12195d16c94a6a43bc9a342b01a7ec6) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `router`, `ship`: the **Checkout** setting can name when a cleanup command runs without a choice, such as a worktree delete when nothing else is left for the user. `/ep-ship` runs that command last without asking when its conditions hold, also under `/ep-deliver`, where a checkout started for one story was always kept.
+
 ## 0.7.0
 
 ### Minor Changes
