@@ -68,9 +68,9 @@ Read the **Checkout** setting now, per [Settings](#settings), and find which kin
   git branch -d <branch> && git fetch --prune
   ```
 
-- **Commands** — run them. Where the user chooses among them, ask, and run their choice **last**: a cleanup that removes the checkout removes the directory this session works in. A command that refuses a checkout with uncommitted or unpushed work is reported to the user, and overridden only on their word.
+- **Commands** — run them. Where the user chooses among them, ask, and run their choice **last**. Where the setting names when a command runs without a choice, and its conditions hold, run that command **last** without asking: a cleanup that removes the checkout removes the directory this session works in. A command that refuses a checkout with uncommitted or unpushed work is reported to the user, and overridden only on their word.
 
-Under [`/ep-deliver`](../deliver/SKILL.md) nobody is there to choose, so ask nothing. A checkout the coordinator reuses for the next story switches back. A checkout started for this story alone is kept as it is, and the report names it for the user to clean up.
+Under [`/ep-deliver`](../deliver/SKILL.md) nobody is there to choose, so ask nothing. A checkout the coordinator reuses for the next story switches back. A checkout started for this story alone gets the cleanup that the setting runs without a choice, when its conditions hold. Otherwise it is kept as it is, and the report names it for the user to clean up.
 
 Three things the commands do not tell you:
 

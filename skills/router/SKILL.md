@@ -242,7 +242,7 @@ Topic `checkout`. Question: *Which kinds of checkout does the work happen in, an
 | Option | Follow-up | Recommend when |
 | --- | --- | --- |
 | **This checkout** | — | The project is worked in one clone that switches branches in place (`git worktree list` shows one) |
-| **These kinds** | One row per kind: how to recognise it (a path, a directory name), its setup command, and its cleanup once the work merged — switch back to the default branch, or commands, and whether the user chooses among them. Then which kind a worker started in parallel gets (`/ep-deliver`) | The project works in worktrees, numbered clones, or a tool that prepares them |
+| **These kinds** | One row per kind: how to recognise it (a path, a directory name), its setup command, and its cleanup once the work merged — switch back to the default branch, or commands, whether the user chooses among them, and when a command runs without a choice. Then which kind a worker started in parallel gets (`/ep-deliver`) | The project works in worktrees, numbered clones, or a tool that prepares them |
 
 Under **This checkout**, setup is a fresh branch off the default branch, and cleanup switches back to the default branch, pulls it, and deletes the merged branch locally and remotely.
 
