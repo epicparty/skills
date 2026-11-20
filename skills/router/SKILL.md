@@ -117,12 +117,13 @@ Done when a fresh agent with only the document and the links in it could continu
 
 ## Vocabulary
 
-Every `ep-*` skill on a route uses these four terms, and this is where they are defined.
+Every `ep-*` skill on a route uses these five terms, and this is where they are defined.
 
 - **Open question** — a call you made *for* the user: a trade-off you resolved on their behalf, a placement you would defend either way, an option they picked before you saw how it rendered, a line you drew around the work. It reaches the user before whatever ships the work. With a PR, it goes in your reply and in the PR body while the diff is open, and `/ep-babysit` holds the merge until it has an answer. Without one — a commit straight to the default branch — ask in your reply and hold the push until the user answers. After the ship it costs a whole PR to act on, so the same words read as commentary rather than a choice.
 - **Sibling** — the same defect at a site the request did not name. It always raises an open question: whether it rides along is the user's scope call.
 - **Small fix** — a fix that lands on the branch even when the branch did not cause the defect: it fixes a defect, adds no behaviour, needs no decision from the user, and fits in one commit the branch's own gate validates. It goes in as its own commit, and the PR body names it.
-- **Found in passing** — the PR body's heading for every finding larger than a small fix, where the user sees it while the diff is open and decides whether it becomes a story. Off a branch, the finding goes in your reply before the push.
+- **Security gap** — a way past auth, a permission, a limit or a secret, or a check meant to stop one that lets it through, in a file the branch changes. It always raises an open question, like a sibling: whether its fix rides along is the user's call.
+- **Found in passing** — the PR body's heading for every finding larger than a small fix that can wait until after the merge. The user decides whether it becomes a story, and under `/ep-deliver` first reads it in the report, after the merge. Off a branch, the finding goes in your reply before the push.
 
 A finding earns a durable home in exactly four cases: the user asked for one, it becomes a story on the tracker, it is a decision that earns an ADR ([`DECISIONS.md`](./DECISIONS.md)), or it is context the project's agent files genuinely lack. Otherwise a new file or a new section is work nobody requested, nobody reviewed, and nobody maintains.
 

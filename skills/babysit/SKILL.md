@@ -122,6 +122,7 @@ Take a fresh read **after** your last push — a gate judged on state from befor
 - no check still running
 - no unresolved thread, and no reviewer sitting on changes-requested
 - every **open question** in the PR body has an answer — a call you made *for* the user is theirs to take while the diff is open, and this merge is what closes that window
+- no item under **Found in passing** is a **security gap** or a **sibling** (`/ep` `## Vocabulary`): move each one to an open question in the PR body, and the line above holds the gate
 - every **automatic** reviewer has reviewed **that head SHA** — its run finished there, and not as **no review** (step 8) — and every finding it raised carries a disposition. No review there with its cap spent holds the gate: report it, and the user decides whether to merge without it
 - the requested kinds are settled (step 8), and every external review requested has landed; merging while one is still running throws away quota you spent
 - code-review findings fixed or dispositioned
