@@ -191,7 +191,7 @@ Two things earn a question, and each has exactly one surface.
 
 **A question about the spec** → the **issue**. The story is ambiguous, contradicts itself, or never decided something the build turns on. That is a defect in the spec, so the answer belongs where the spec lives. Add the discovery label for an unmade decision or the info label for a missing fact. Never open a PR to carry a spec question: a PR is where work is reviewed, never where it is proposed.
 
-**A go/no-go on the work** → the **PR**. Take the branch to a normal reviewable PR through `/ep-to-pr`, then ask in a comment on it. Nobody can answer *is this safe to run* without the diff in front of them.
+**A go/no-go on the work** → the **PR**. Take the branch to a normal reviewable PR through `/ep-to-pr`, then ask in a comment on it. Nobody can answer *is this safe to run* without the diff in front of them. An **open question** in the PR body takes the same surface: `/ep-babysit` holds the merge until it has an answer, so ask it on the PR when the gate stops on it, then park.
 
 Either way, one comment opening with the literal line `**A worker needs a decision**`, then the single question, the options, your recommendation, and what you will do if no answer comes. That first line is how the coordinator finds the question and tells a reply from silence.
 
