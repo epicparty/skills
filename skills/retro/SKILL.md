@@ -4,7 +4,7 @@ description: Looks back over a session — the current one, a named one, or the 
 disable-model-invocation: true
 metadata:
   pack: epicparty/skills
-  version: 0.2.0
+  version: 0.2.1
 ---
 
 # Retro
