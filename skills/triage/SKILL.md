@@ -3,7 +3,7 @@ name: triage
 description: Judges one existing issue — still viable, decided enough, labelled right — and ends in one verdict. Use when asked whether a story is still worth building, is decided enough to build, or is mislabelled.
 metadata:
   pack: epicparty/skills
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # Triage

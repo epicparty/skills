@@ -3,7 +3,7 @@ name: babysit
 description: Sweeps an open PR toward merged. Use when a PR needs watching, a red check fixed, or a merge once its gate is clear.
 metadata:
   pack: epicparty/skills
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # Babysit
