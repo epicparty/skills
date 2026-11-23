@@ -42,8 +42,9 @@ Install through this CLI, not `npx skills add epicparty/skills`: the skills refe
 | `<prefix>-outdated` | Reports what a pnpm workspace's dependencies released since your versions. |
 | `<prefix>-upgrade` | Upgrades those dependencies and migrates the code. |
 | `<prefix>-writing-for-agents` | How to write skills, `AGENTS.md` and anything else an agent reads. |
+| `<prefix>-retro` | Looks back over a session for what would make the next one go better, and proposes each fix. |
 
-You type five of them yourself — `/<prefix>`, `/<prefix>-setup`, `/<prefix>-deliver`, `/<prefix>-upgrade`, `/<prefix>-release` — and an agent asked to start one is refused.
+You type six of them yourself — `/<prefix>`, `/<prefix>-setup`, `/<prefix>-deliver`, `/<prefix>-upgrade`, `/<prefix>-release`, `/<prefix>-retro` — and an agent asked to start one is refused.
 
 GitHub issues, pull requests and Projects are built in. Another tracker works once the **Tracker** setting describes it, and a project with none answers **None**.
 
@@ -97,7 +98,7 @@ MIT. [`NOTICE`](./NOTICE) carries the licenses of the projects below, and every 
 
 ## Credits
 
-- [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill`, `diagnose`, `architect` and `writing-for-agents`, and the test-first, seams, glossary and hand-off parts of others.
-- Lauren Tan's [pstack](https://github.com/backnotprop/pstack): the verification ideas — proving a story on its user's surface, measuring a target, a failed fix's premise, a change's blast radius, encoding a lesson.
+- [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill`, `diagnose`, `architect`, `retro` and `writing-for-agents`, and the test-first, seams, glossary, triage, PR-body and hand-off parts of others. The PR body's pictures come by way of Dex Horthy's [`show-me`](https://github.com/humanlayer/skills).
+- Lauren Tan's [pstack](https://github.com/backnotprop/pstack): the verification ideas — proving a story on its user's surface, measuring a target, a failed fix's premise, fixing a root cause rather than guarding a symptom, a change's blast radius, encoding a lesson.
 
 [`UPSTREAM.md`](./UPSTREAM.md) maps what came from where. Thank you both.
