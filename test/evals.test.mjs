@@ -1,7 +1,7 @@
 // The eval harness grades agents, so a bug in it misjudges every skill change. These tests run the
 // graders on real prepared projects, against the work of an honest agent and of one that cheats.
 import assert from 'node:assert/strict';
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { after, describe, it } from 'node:test';
 import { grade } from '../evals/lib/graders.mjs';
@@ -204,6 +204,86 @@ describe('graders, on diagnose-handoff', () => {
       'package.json': '{ "name": "monthtotal", "type": "module", "scripts": { "test": "node --test" }, "dependencies": { "csv-parse": "^5" } }\n',
     });
     assert.equal(results(task, ws, { output: verdict })['builds and files no follow-up'], false);
+  });
+});
+
+describe('graders, on implement-absence', () => {
+  const task = tasks['implement-absence'];
+  const BUILT = readFileSync(join(task.dir, 'fixture/src/reminders.mjs'), 'utf8')
+    .replace('    reminders.push', '    if (user.prefs?.unsubscribed) continue;\n    reminders.push');
+  const test = (body) => `import assert from 'node:assert/strict';\nimport { test } from 'node:test';\nimport { remindersFor } from '../src/reminders.mjs';\nconst NOW = Date.parse('2026-11-20T12:00:00Z');\nconst u = (prefs) => ({ email: 'a@x.io', cart: ['tea'], cartUpdatedAt: NOW - 2 * 86400000, prefs });\n${body}\n`;
+  const ABSENCE = "test('no reminder after unsubscribing', () => assert.deepEqual(remindersFor([u({ unsubscribed: true })], NOW), []));";
+  const PAIR = "test('a subscriber with preferences is still reminded', () => assert.equal(remindersFor([u({ unsubscribed: false })], NOW).length, 1));";
+
+  it('pass an absence paired with the case where the reminder still goes', () => {
+    const ws = workspace('implement-absence');
+    commitOnBranch(ws.dir, { 'src/reminders.mjs': BUILT, 'test/unsubscribed.test.mjs': test(`${ABSENCE}\n${PAIR}`) });
+    for (const [label, pass] of Object.entries(results(task, ws))) assert.ok(pass, label);
+  });
+
+  it('fail an absence asserted alone, which a defect that drops everyone also passes', () => {
+    const ws = workspace('implement-absence');
+    commitOnBranch(ws.dir, { 'src/reminders.mjs': BUILT, 'test/unsubscribed.test.mjs': test(ABSENCE) });
+    const r = results(task, ws);
+    assert.equal(r['hidden-tests-pass test'], true);
+    assert.equal(r['a test sees the reminder a subscriber still gets'], false);
+  });
+});
+
+describe('graders, on diagnose-root-cause', () => {
+  const task = tasks['diagnose-root-cause'];
+  const TEST = "import assert from 'node:assert/strict';\nimport { test } from 'node:test';\nimport { loadUsers } from '../src/users.mjs';\ntest('crlf', () => assert.equal(loadUsers('name,email\\r\\nAda,a@x.io\\r\\n')[0].email, 'a@x.io'));\n";
+  const GUARD_TEST = "import assert from 'node:assert/strict';\nimport { test } from 'node:test';\nimport { digestRecipients } from '../src/digest.mjs';\ntest('no crash', () => assert.deepEqual(digestRecipients([{}]), []));\n";
+
+  it('pass a fix in the parser', () => {
+    const ws = workspace('diagnose-root-cause');
+    commitOnBranch(ws.dir, {
+      'src/users.mjs': "export function loadUsers(csv) {\n  const [header, ...rows] = csv.split(/\\r?\\n/).filter((line) => line !== '');\n  const keys = header.split(',');\n  return rows.map((row) => Object.fromEntries(row.split(',').map((value, i) => [keys[i], value])));\n}\n",
+      'test/crlf.test.mjs': TEST,
+    });
+    for (const [label, pass] of Object.entries(results(task, ws))) assert.ok(pass, label);
+  });
+
+  it('fail a guard at the crash site, which drops the users it cannot read', () => {
+    const ws = workspace('diagnose-root-cause');
+    commitOnBranch(ws.dir, {
+      'src/digest.mjs': "export function digestRecipients(users) {\n  return [...new Set(users.filter((u) => u.email).map((u) => u.email.toLowerCase()))];\n}\n",
+      'test/guard.test.mjs': GUARD_TEST,
+    });
+    const r = results(task, ws);
+    assert.equal(r['suite-green'], true);
+    assert.equal(r['fixes the parser, not the crash site'], false);
+  });
+});
+
+describe('graders, on the read-only tasks', () => {
+  it('triage-regression: pass a regression sent to diagnose, fail a duplicate closed', () => {
+    const task = tasks['triage-regression'];
+    const ws = workspace('triage-regression');
+    const good = results(task, ws, { output: '### Premise\n- Reproduced: 2 of 3 orders. A regression of #7.\n### Verdict — Ready\nNext: `/ev-diagnose`.' });
+    for (const [label, pass] of Object.entries(good)) assert.ok(pass, label);
+    const bad = results(task, ws, { output: '### Verdict — Close\nDuplicate of #7.' });
+    assert.equal(bad['does not close it as a duplicate'], false);
+    assert.equal(bad['reads it as a regression'], false);
+  });
+  it('triage-refusal: pass a report that puts the refusal back to the user', () => {
+    const task = tasks['triage-refusal'];
+    const ws = workspace('triage-refusal');
+    for (const [label, pass] of Object.entries(results(task, ws, { output: 'Declined in #9 because of a second format to maintain; does that still hold?' }))) assert.ok(pass, label);
+    assert.equal(results(task, ws, { output: 'Viable. Ready.' })['names the earlier refusal'], false);
+  });
+  it('to-pr-body: pass a body that names the door and the blast radius', () => {
+    const task = tasks['to-pr-body'];
+    const ws = workspace('to-pr-body');
+    for (const [label, pass] of Object.entries(results(task, ws, { output: '## Merge danger\nDoor: one-way — drops `legacy_total`.\nBlast radius: every order has lines.' }))) assert.ok(pass, label);
+  });
+  it('retro-session: pass a cited report, fail one that edits the repo', () => {
+    const task = tasks['retro-session'];
+    const ws = workspace('retro-session');
+    const output = '| T18 | import rule | a lint rule | — |\n| T22 | no CI | a CI workflow | — |\n| T3–T15 | navigation | point AGENTS.md at config/rates.json | — |';
+    for (const [label, pass] of Object.entries(results(task, ws, { output }))) assert.ok(pass, label);
+    writeFileSync(join(ws.dir, 'AGENTS.md'), 'changed\n');
+    assert.equal(results(task, ws, { output })['tree-unchanged'], false);
   });
 });
 

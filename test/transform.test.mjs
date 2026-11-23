@@ -77,7 +77,7 @@ describe('the pack', () => {
     for (const s of skills) {
       const name = s === 'router' ? 'acme' : `acme-${s}`;
       const adapted = readFileSync(join(tmp, 'acme', name, 'SKILL.md'), 'utf8').includes(UPSTREAM_MARK)
-        || ['implement', 'to-story', 'router'].includes(s);
+        || ['implement', 'to-story', 'router', 'to-pr'].includes(s);
       assert.equal(existsSync(join(tmp, 'acme', name, 'NOTICE')), adapted, s);
     }
   });
@@ -122,6 +122,25 @@ describe('check', () => {
     assert.ok(problems.length > 0);
     assert.ok(problems.every((p) => /names \/?up-implement, which is not installed|points to a missing/.test(p)), problems.join('\n'));
     assert.ok(problems.some((p) => p.endsWith('names /up-implement, which is not installed')));
+  });
+  // The `skills` installer parses frontmatter as strict YAML and skips a skill that fails, silently.
+  it('reports frontmatter the installer cannot parse', () => {
+    const src = miniPack(join(tmp, 'src-yaml'), 'Body.');
+    const out = join(tmp, 'yaml-up');
+    build(src, 'up', out);
+    const file = join(out, 'up-implement', 'SKILL.md');
+    writeFileSync(file, readFileSync(file, 'utf8').replace('description: implement.', 'description: Builds a story: test-first.'));
+    const problems = check(out, 'up', { canonicalSkills: packSkills(src) });
+    assert.equal(problems.length, 1, problems.join('\n'));
+    assert.match(problems[0], /^up-implement\/SKILL\.md: frontmatter is not valid YAML/);
+  });
+  it('reports a description that is present but empty', () => {
+    const src = miniPack(join(tmp, 'src-empty'), 'Body.');
+    const out = join(tmp, 'empty-up');
+    build(src, 'up', out);
+    const file = join(out, 'up-implement', 'SKILL.md');
+    writeFileSync(file, readFileSync(file, 'utf8').replace('description: implement.', 'description: ""'));
+    assert.deepEqual(check(out, 'up', { canonicalSkills: packSkills(src) }), ['up-implement/SKILL.md: no description']);
   });
   it('needs the pack\'s skills', () => {
     assert.throws(() => check(join(tmp, 'up'), 'up'), /canonicalSkills/);

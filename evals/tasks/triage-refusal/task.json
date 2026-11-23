@@ -1,0 +1,21 @@
+{
+  "skill": "triage",
+  "split": "train",
+  "settings": false,
+  "prompt": "/ev-triage #15\n\nI'm away for this run: give me the report, and apply nothing. I'll take the verdict when I'm back.",
+  "graders": [
+    {
+      "name": "tree-unchanged"
+    },
+    {
+      "name": "output-matches",
+      "label": "names the earlier refusal",
+      "pattern": "#9\\b"
+    },
+    {
+      "name": "output-matches",
+      "label": "asks whether the refusal still holds",
+      "pattern": "still (hold|stand|appl|true|the case)|reconsider|changed (your|the) mind|lift"
+    }
+  ]
+}

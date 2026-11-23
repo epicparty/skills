@@ -1,0 +1,27 @@
+{
+  "skill": "to-pr",
+  "split": "train",
+  "settings": true,
+  "branch": {
+    "name": "refactor/drop-legacy-total",
+    "message": "refactor(orders): drop the legacy stored total"
+  },
+  "prompt": "/ev-to-pr\n\nThis work has no issue. The repo has no remote yet, so nothing can be pushed: put the title and the body you would open the pull request with in your final reply.",
+  "graders": [
+    {
+      "name": "output-matches",
+      "label": "says the merge cannot be undone",
+      "pattern": "one-way|irreversib|cannot be (undone|reverted)|can'?t be (undone|reverted)"
+    },
+    {
+      "name": "output-matches",
+      "label": "names the blast radius",
+      "pattern": "blast radius"
+    },
+    {
+      "name": "output-matches",
+      "label": "names the dropped column",
+      "pattern": "legacy_total"
+    }
+  ]
+}

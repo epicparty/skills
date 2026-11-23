@@ -1,0 +1,36 @@
+{
+  "skill": "implement",
+  "split": "train",
+  "settings": true,
+  "prompt": "/ev-implement\n\nThis work has no issue. Build this story, and do not ask me anything: where you would ask, decide, and say what you decided in your hand-off.\n\n## Problem Statement\n\nUsers who unsubscribed from email still get cart reminders from `remindersFor` (`src/reminders.mjs`).\n\n## Solution\n\nA user whose `prefs.unsubscribed` is `true` gets no reminder.\n\n## User Stories\n\n1. As a User who unsubscribed (`prefs.unsubscribed: true`), I get no cart reminder, so that unsubscribing means what it says\n\n## Testing Decisions\n\nUnit tests with `node:test`, beside the existing ones in `test/reminders.test.mjs`.",
+  "graders": [
+    {
+      "name": "on-a-branch"
+    },
+    {
+      "name": "suite-green"
+    },
+    {
+      "name": "new-tests-red-on-base",
+      "paths": [
+        "src"
+      ]
+    },
+    {
+      "name": "existing-tests-kept",
+      "files": [
+        "test/reminders.test.mjs"
+      ]
+    },
+    {
+      "name": "hidden-tests-pass",
+      "into": "test"
+    },
+    {
+      "name": "tests-fail-on-mutant",
+      "label": "a test sees the reminder a subscriber still gets",
+      "from": "mutant",
+      "into": "src"
+    }
+  ]
+}

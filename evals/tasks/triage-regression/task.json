@@ -1,0 +1,31 @@
+{
+  "skill": "triage",
+  "split": "train",
+  "settings": false,
+  "prompt": "/ev-triage #12\n\nI'm away for this run: give me the report, and apply nothing. I'll take the verdict when I'm back.",
+  "graders": [
+    {
+      "name": "tree-unchanged"
+    },
+    {
+      "name": "output-matches",
+      "label": "reads it as a regression",
+      "pattern": "regress"
+    },
+    {
+      "name": "output-matches",
+      "label": "runs the reproduction",
+      "pattern": "confirmed|reproduced|reproduces|2 of (the )?3|two of (the )?three"
+    },
+    {
+      "name": "output-matches",
+      "label": "sends it to diagnose",
+      "pattern": "ev-diagnose"
+    },
+    {
+      "name": "output-lacks",
+      "label": "does not close it as a duplicate",
+      "pattern": "Verdict\\W{0,6}Close"
+    }
+  ]
+}

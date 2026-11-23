@@ -135,6 +135,29 @@ export const graders = {
     return ctx.questions <= max ? ok(`${ctx.questions} asked`) : no(`${ctx.questions} asked, at most ${max}`);
   },
 
+  /**
+   * The agent's own suite fails once the files in the task's `from` folder replace those under
+   * `into`: a planted defect its tests can see. A test that asserts only an absence passes on a
+   * defect that drops everything, so this catches the test with no sibling where the thing happens.
+   */
+  'tests-fail-on-mutant'(ctx, { from, into }) {
+    const mutant = join(ctx.task.dir, from);
+    const copy = scratchCopy(ctx);
+    try {
+      for (const file of readdirSync(mutant)) cpSync(join(mutant, file), join(copy, into, file));
+      const r = npmTest(copy);
+      return r.status !== 0 ? ok() : no('the suite passes on the planted defect');
+    } finally {
+      rmSync(copy, { recursive: true, force: true });
+    }
+  },
+
+  /** The agent's final reply does not match a pattern: a verdict it must not give. */
+  'output-lacks'(ctx, { pattern }) {
+    const m = new RegExp(pattern, 'i').exec(ctx.output);
+    return m ? no(`matched "${m[0]}"`) : ok();
+  },
+
   /** The agent's final reply matches a pattern, case-insensitively. */
   'output-matches'(ctx, { pattern }) {
     return new RegExp(pattern, 'i').test(ctx.output) ? ok() : no(`no match for /${pattern}/i`);
