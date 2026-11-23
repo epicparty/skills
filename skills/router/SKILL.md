@@ -51,6 +51,7 @@ Done when you can name the issue this work came from or say it has none, name wh
 | "Check the board", "update the statuses" | [Checking the board](./BOARD.md#checking-the-board). Ends in a report of every card moved, not a PR |
 | A release to cut — the merged changes are ready to ship together | `/ep-release`. Ends in a published version, not a PR of the work |
 | Several stories marked to start, or named together | `/ep-deliver` — the coordinator walks them in sequence or starts a worker per story, and prints where each one stands |
+| A session to learn from — one that went slow or wrong, or the stories a `/ep-deliver` run parked | `/ep-retro`, which the user types. Ends in ranked proposals, and a story or a branch for each one they accept |
 
 Where two rows fit, the unsettled decisions choose: decisions that turn on each other, and the request is an idea to grill; a few or none, and it is a feature to build, with the questions asked on the way. `/ep-triage` after `/ep-to-story` is quick — a story written to the bar earns its ready label in one pass — and it keeps the labels with the one skill that owns them.
 
@@ -80,9 +81,11 @@ Done when every stage is named in order, the HITL ones are flagged as needing th
 
 ## 4. Walk it
 
+<!-- upstream: mattpocock/skills skills/engineering/ask-matt/PHASE-BOUNDARIES.md -->
+
 Follow the skills the route names, and keep the two rules that bind every route:
 
-- **Context hygiene.** The questions, any grilling, and the story stay in one unbroken window, so both build on the same thinking. `/ep-implement` then starts fresh from the issue. [Hand off](#hand-off) when a thread fills before the story exists.
+- **Context hygiene.** The questions, any grilling, and the story stay in one unbroken window, so both build on the same thinking. `/ep-implement` then starts fresh from the issue. Decide what to keep at a **boundary** between stages, never inside one: mid-stage, finish it, or send the rest to a subagent. At a boundary, carry on while the next stage needs this one's reasoning verbatim and the window has room; clear when nothing here bears on what comes next; [hand off](#hand-off) when the work travels — another harness, another checkout, a colleague; otherwise compact, naming the next stage, so the summary keeps what it needs.
 - **Re-route when the work says so.** A route is a reading of the request, and the request gets clearer as you work it. An "obvious" change that opens three decisions has earned its questions, and one whose decisions turn on each other has earned a grilling; fog that burns off in exploration drops straight to `/ep-to-story`. Say when you change route and why.
 
 Every skill on a route reaches a skill by its name. Reading one off disk works too — following a skill you have read is the same as invoking it.
@@ -111,7 +114,11 @@ Read what the thread points at first — the issue, the branch — so you know w
 - **End with the next steps**: the remaining stages of the route, by skill name, so the next agent knows which to invoke. Where no route ran in this thread, take it from the table in § 2.
 - **Redact** every key, password and piece of personal data.
 
-Report in § 5's shape — the path, or why none was needed, and the next step — then stop.
+<!-- upstream: mattpocock/skills skills/in-progress/claude-handoff/SKILL.md -->
+
+Where this session has a tool that starts an agent thread — the one `/ep-deliver`'s **Orchestration** setting names, or another the harness offers — offer to start the fresh agent now, with the document as its brief. On the user's yes, start it, pass the document's path, and give its link in the report.
+
+Report in § 5's shape — the path, or why none was needed, the thread you started, and the next step — then stop.
 
 Done when a fresh agent with only the document and the links in it could continue without asking what happened — or, with no document, with only the links you named.
 
@@ -164,6 +171,10 @@ Topic `issue-tracker`. Question: *Where does the project track its work, how doe
 | **None** | — | `gh repo view` fails, the user names no other tracker, and the request names no issue. A request that names one means the tracker exists: ask where it lives |
 
 With **Another tracker**, every step that names a `gh issue` command does the same thing the way this setting describes.
+
+<!-- upstream: mattpocock/skills skills/engineering/setup-matt-pocock-skills/issue-tracker-github.md -->
+
+**A fork files where you say.** In a fork, `gh` can resolve issues to the upstream parent rather than the fork. When `gh repo view --json nameWithOwner,isFork,parent` reports a fork, the **GitHub Issues** answer names the repo that owns the work, as `owner/name`, and every `gh issue` command passes `-R <owner/name>`. Before the first issue a skill files in a fork, check that the repo `gh` resolves is that one.
 
 With a board, [`BOARD.md`](./BOARD.md) is how the skills keep it. Without one, they skip every board step.
 

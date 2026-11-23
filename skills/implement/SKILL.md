@@ -109,7 +109,7 @@ Done when your work is committed and `git status` shows nothing of yours left be
 
 ## Hand off
 
-Report the branch, the issue, what you built, the validation result, the proof — each story's evidence, and each inconclusive or manual one —, every **small fix** you committed, every larger finding, and every **open question** you are leaving — the calls you made *for* the user. Then [`/ep-to-pr`](../to-pr/SKILL.md) opens the pull request, carrying the proof, the findings and the questions into its body, and [`/ep-ship`](../ship/SKILL.md) carries it to merged and into production.
+Report the branch, the issue, what you built, the validation result, the proof — each story's evidence, and each inconclusive or manual one —, the blast radius `/ep-code-review` named with its evidence, every **small fix** you committed, every larger finding, and every **open question** you are leaving — the calls you made *for* the user. Then [`/ep-to-pr`](../to-pr/SKILL.md) opens the pull request, carrying the proof, the blast radius, the findings and the questions into its body, and [`/ep-ship`](../ship/SKILL.md) carries it to merged and into production.
 
 ## Guardrails
 

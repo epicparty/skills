@@ -46,6 +46,16 @@ Each round reshapes the tree: settled decisions push the frontier outward and un
 
 When a frontier question needs a fact from the environment, dispatch a subagent with a fresh context to find it rather than asking the user — or find it yourself where subagents are unavailable. Do not block on it: only the questions downstream of that fact wait, and the rest of the frontier goes out now.
 
+<!-- upstream: mattpocock/skills skills/engineering/prototype/SKILL.md -->
+
+**A question that has to be seen** — a state model too tangled to judge on paper, what a screen should look like — can earn a throwaway **prototype** before its round, on the user's yes. It is code that answers one question and is then thrown away:
+
+- **Marked as throwaway** in its name, beside the code it is for, and on a `prototype/<slug>` branch that never merges.
+- **One command to run** — a script in the project's task runner, or a single HTML file to open — showing the whole relevant state after every action, or switching between a few radically different variants.
+- **Nothing it does not need to answer the question** — no persistence, no tests, no polish. It never reaches a PR, so the test-first rule is untouched.
+
+The question goes in the next round with the prototype beside it. The answer is the decision; the story names the branch so the next agent can open it.
+
 Done when the frontier is empty — every branch of the tree visited, nothing silently assumed — and the user confirms you have reached a shared understanding: list the decisions in a few lines and ask whether they capture it. Start no work on it — no story, no code — before that; the glossary and ADR writes of § 3 happen during the rounds.
 
 ## 3. Hold the language, in every round
