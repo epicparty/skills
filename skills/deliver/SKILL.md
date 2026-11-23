@@ -4,7 +4,7 @@ description: Delivers the stories you marked to start — in sequence in this th
 disable-model-invocation: true
 metadata:
   pack: epicparty/skills
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # Deliver

@@ -3,7 +3,7 @@ name: grill
 description: Grills the user on a plan, decision or idea in rounds of questions until nothing is left assumed, writing each term and decision it settles into the glossary or an ADR. Use when the user asks to be grilled or to have an idea stress-tested, when decisions turn on each other so no list of questions can be written up front, or to pin down a domain term or record an ADR.
 metadata:
   pack: epicparty/skills
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # Grill

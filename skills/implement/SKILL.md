@@ -3,7 +3,7 @@ name: implement
 description: Builds one story on one branch — test-first, validated, reviewed, committed. Use when an issue is ready to build.
 metadata:
   pack: epicparty/skills
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # Implement

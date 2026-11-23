@@ -1,5 +1,29 @@
 # @epicparty/skills
 
+## 0.9.0
+
+### Minor Changes
+
+- [#28](https://github.com/epicparty/skills/pull/28) [`8efa6d0`](https://github.com/epicparty/skills/commit/8efa6d06ecd5f2a1b89ada03e01cfee4a011d4ad) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `diagnose`: looks for a fix that already exists before writing one, and proves it red without and green with it; a regression bisects from the fix that shipped. A fix goes where the system first went wrong, not as a guard at the crash site, and a guard someone wrote is read in its commit before it is changed.
+
+- [#28](https://github.com/epicparty/skills/pull/28) [`8efa6d0`](https://github.com/epicparty/skills/commit/8efa6d06ecd5f2a1b89ada03e01cfee4a011d4ad) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `grill`: a question that has to be seen can earn a throwaway prototype, on a `prototype/<slug>` branch that never merges, before its round.
+
+- [#28](https://github.com/epicparty/skills/pull/28) [`8efa6d0`](https://github.com/epicparty/skills/commit/8efa6d06ecd5f2a1b89ada03e01cfee4a011d4ad) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `to-pr`, `implement`, `babysit`: the PR body shows the change's shape in the smallest picture that makes the point, proves a visible change before and after, and states its **Merge danger** — a one-way or two-way door, and the blast radius `code-review` named. `babysit` merges a one-way door only on the user's word, and under `deliver` holds it as a go/no-go.
+
+- [#28](https://github.com/epicparty/skills/pull/28) [`8efa6d0`](https://github.com/epicparty/skills/commit/8efa6d06ecd5f2a1b89ada03e01cfee4a011d4ad) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `retro`: a new skill you type. It looks back over a session, or the stories a `deliver` run parked, finds the cause of each moment that went slow or wrong, and proposes each fix on the rung that holds it — a check before a rule, a rule before prose.
+
+- [#28](https://github.com/epicparty/skills/pull/28) [`8efa6d0`](https://github.com/epicparty/skills/commit/8efa6d06ecd5f2a1b89ada03e01cfee4a011d4ad) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `router`: in a fork, the **GitHub Issues** answer names the repo that owns the work, and issues are filed there; the context decision is made at a stage boundary, in order — continue, clear, hand off, compact; `/ep handoff` offers to start the fresh agent itself; and `/ep-retro` has a route.
+
+- [#28](https://github.com/epicparty/skills/pull/28) [`8efa6d0`](https://github.com/epicparty/skills/commit/8efa6d06ecd5f2a1b89ada03e01cfee4a011d4ad) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `triage`, `deliver`: triage reproduces a bug's claim where that is cheap, reads a bug filed after its fix shipped as a regression for `diagnose` rather than a duplicate to close, surfaces an earlier refusal with its reason (and offers to keep it as an ADR), resumes from an earlier triage note, posts needs-info as "established so far / still need from you", and marks every comment it posts. `deliver` no longer takes a triage note for a human's answer.
+
+### Patch Changes
+
+- [#28](https://github.com/epicparty/skills/pull/28) [`8efa6d0`](https://github.com/epicparty/skills/commit/8efa6d06ecd5f2a1b89ada03e01cfee4a011d4ad) Thanks [@narcisoaf](https://github.com/narcisoaf)! - The CLI's `check` parses every installed `SKILL.md` frontmatter as strict YAML, the way the `skills` installer does, so a description with an unquoted `: ` fails the check instead of being skipped at install without a word.
+
+- [#28](https://github.com/epicparty/skills/pull/28) [`8efa6d0`](https://github.com/epicparty/skills/commit/8efa6d06ecd5f2a1b89ada03e01cfee4a011d4ad) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `implement`: two more test anti-patterns — an absence asserted with no sibling test where the thing happens, and an error matched by its message where callers branch on its type.
+
+- [#28](https://github.com/epicparty/skills/pull/28) [`8efa6d0`](https://github.com/epicparty/skills/commit/8efa6d06ecd5f2a1b89ada03e01cfee4a011d4ad) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `to-story`: sub-issues and blocking edges use `gh issue create --parent/--blocked-by` and `gh issue edit --add-sub-issue/--add-blocked-by`, with the REST calls kept for an older `gh`.
+
 ## 0.8.0
 
 ### Minor Changes
