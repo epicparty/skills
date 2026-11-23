@@ -1,5 +1,15 @@
 # @epicparty/skills
 
+## 0.10.0
+
+### Minor Changes
+
+- [#31](https://github.com/epicparty/skills/pull/31) [`3c3440e`](https://github.com/epicparty/skills/commit/3c3440e0d4685689c36efbacc2d436a3fb826d87) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `router`, `babysit`, `to-pr`, `implement`: a call left to the user holds the merge. **Open question** now covers a call you left *to* the user, such as whether the work crosses a line the request drew, as well as one you made for them: every call put to the user about the work is one. **Found in passing** says what can wait until after the merge: a finding that would be its own story either way. The change's own follow-through, such as a list or a doc it leaves stale, lands as a commit, or is an open question where a line drawn around the work leaves it out. The merge gate reads **Found in passing** and the replies on the PR for any such call, moves it to an open question, and holds.
+
+### Patch Changes
+
+- [#30](https://github.com/epicparty/skills/pull/30) [`d391b57`](https://github.com/epicparty/skills/commit/d391b579dbf13d6e880eb0d5c0b919d12ace49d9) Thanks [@narcisoaf](https://github.com/narcisoaf)! - `retro`: read only the transcript of each session named, never another project's logs unless the user asks.
+
 ## 0.9.0
 
 ### Minor Changes
