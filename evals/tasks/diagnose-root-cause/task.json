@@ -1,0 +1,39 @@
+{
+  "skill": "diagnose",
+  "split": "train",
+  "settings": true,
+  "prompt": "/ev-diagnose\n\nThe weekly digest crashes on the user export ops sent today, `exports/users-2026-11-20.csv`: `digestRecipients(loadUsers(csv))` throws `TypeError: Cannot read properties of undefined (reading 'toLowerCase')` in `src/digest.mjs`. I'm away for this run: proceed on your own ranking of the hypotheses, and don't ask me anything.",
+  "graders": [
+    {
+      "name": "on-a-branch"
+    },
+    {
+      "name": "suite-green"
+    },
+    {
+      "name": "new-tests-red-on-base",
+      "paths": [
+        "src"
+      ]
+    },
+    {
+      "name": "existing-tests-kept",
+      "files": [
+        "test/users.test.mjs",
+        "test/digest.test.mjs"
+      ]
+    },
+    {
+      "name": "hidden-tests-pass",
+      "label": "fixes the parser, not the crash site",
+      "into": "test"
+    },
+    {
+      "name": "no-debug-logs",
+      "paths": [
+        "src",
+        "test"
+      ]
+    }
+  ]
+}

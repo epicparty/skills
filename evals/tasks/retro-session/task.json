@@ -1,0 +1,31 @@
+{
+  "skill": "retro",
+  "split": "train",
+  "settings": false,
+  "prompt": "/ev-retro\n\nLook back on yesterday's session: its transcript is `notes/session-2026-11-20.md`. I'm away for this run: give me the report and change nothing.",
+  "graders": [
+    {
+      "name": "tree-unchanged"
+    },
+    {
+      "name": "output-matches",
+      "label": "cites the moments",
+      "pattern": "\\bT\\d{1,2}\\b"
+    },
+    {
+      "name": "output-matches",
+      "label": "puts the repeated import finding on a lint rule",
+      "pattern": "lint|no-restricted-imports|dependency-cruiser"
+    },
+    {
+      "name": "output-matches",
+      "label": "names the missing CI guardrail",
+      "pattern": "\\bCI\\b|guardrail|pre-commit|git hook"
+    },
+    {
+      "name": "output-matches",
+      "label": "points the agent files at the config",
+      "pattern": "config/rates\\.json"
+    }
+  ]
+}
